@@ -11,7 +11,10 @@ function RouteComponent() {
   return (
     <section className='page-wrapper'>
       <Search placeHolderText='Search for movies' />
-      <h2>Movies</h2>
+      <section className='movies-wrapper'>
+        <h2>Movies</h2>
+        <section className="movies"></section>
+      </section>
     </section>
   );
 }

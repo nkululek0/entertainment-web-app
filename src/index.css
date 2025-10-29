@@ -49,4 +49,7 @@
   padding: 20px 15px;
   background-color: var(--blue-950);
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 }

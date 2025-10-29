@@ -7,10 +7,14 @@ export const Route = createFileRoute('/tv-series')({
 })
 
 function RouteComponent() {
+
   return (
     <section className='page-wrapper'>
       <Search placeHolderText='Search for TV series' />
-      <h2>TV Series</h2>
+      <section className='tv-series-wrapper'>
+        <h2>TV Series</h2>
+        <section className="tv-series"></section>
+      </section>
     </section>
   );
 }

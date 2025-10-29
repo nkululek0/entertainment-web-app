@@ -7,10 +7,14 @@ export const Route = createFileRoute('/bookmark')({
 });
 
 function RouteComponent() {
-return (
+
+  return (
     <section className='page-wrapper'>
       <Search placeHolderText='Search for bookmarked shows' />
-      <h2>Bookmarks</h2>
+      <section className='bookmarks-wrapper'>
+        <h2>Bookmarked Movies</h2>
+        <section className="bookmarks"></section>
+      </section>
     </section>
   );
 };
