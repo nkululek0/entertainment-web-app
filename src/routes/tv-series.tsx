@@ -1,3 +1,5 @@
+import { Search } from '@/components/search';
+
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/tv-series')({
@@ -7,6 +9,7 @@ export const Route = createFileRoute('/tv-series')({
 function RouteComponent() {
   return (
     <section className='page-wrapper'>
+      <Search placeHolderText='Search for TV series' />
       <h2>TV Series</h2>
     </section>
   );
