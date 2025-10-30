@@ -1,0 +1,35 @@
+.primary {
+  width: 70dvw;
+  height: 150px;
+  background-color: var(--blue-500);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 5px;
+  padding: 10px;
+}
+
+.info-and-bookmark-container {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.info {
+  display: flex;
+  gap: 10px;
+}
+
+.category {
+  display: flex;
+  gap: 10px;
+}
+
+.bookmark-container {
+  display: flex;
+  align-self: flex-end;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 50%;
+}
