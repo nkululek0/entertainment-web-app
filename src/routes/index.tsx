@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { Search } from '@/components/search';
 
 import { createFileRoute } from '@tanstack/react-router';
@@ -12,7 +14,17 @@ export const Route = createFileRoute('/')({
 });
 
 function RouteComponent() {
-  const trendingMedia = getTrending();
+  const [trendingMedia, setTrendingMedia] = useState<Trending[]>([]);
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      const trending = await getTrending();
+      setTrendingMedia(trending);
+    };
+
+    fetchTrending();
+    console.log(trendingMedia);
+  }, [trendingMedia]);
 
   return (
     <section className='page-wrapper'>
