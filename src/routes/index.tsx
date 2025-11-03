@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
-
 import { Search } from '@/components/search';
 
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 
 import type { MediaItem } from '@/api/types';
 import { getData } from '@/api/api';
@@ -11,21 +9,27 @@ import { Media } from '@/components/media';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
+  loader: async () => {
+    const data = await getData();
+
+    if (data && data.length > 0) {
+      return data as MediaItem[];
+    }
+    else {
+      throw Error();
+    }
+  },
+  pendingComponent: () => {
+    return <div className="loading">Loading...</div>;
+  },
+  errorComponent: () => {
+    return <div className="error">There was an issue loading the component</div>;
+  }
 });
 
 function RouteComponent() {
-  const [trendingMedia, setTrendingMedia] = useState<MediaItem[]>([]);
-
-  useEffect(() => {
-    const fetchTrending = async () => {
-      const data = await getData();
-      if (data && data.length > 0) {
-        setTrendingMedia(data.filter((item: MediaItem) => item.isTrending));
-      }
-    };
-
-    fetchTrending();
-  }, [trendingMedia]);
+  const data = useLoaderData({ from: '/' });
+  const trendingMedia = data?.filter((item: MediaItem) => item.isTrending);
 
   return (
     <section className='page-wrapper'>
@@ -36,7 +40,7 @@ function RouteComponent() {
           <div className='trending-media-wrapper'>
             <section className='trending'>
               {
-                trendingMedia.map((item: MediaItem, index: number) => {
+                trendingMedia?.map((item: MediaItem, index: number) => {
                   return (
                     <Media
                       key={ index }
