@@ -35,7 +35,7 @@ function RouteComponent() {
   return (
     <section className='page-wrapper'>
       <Search placeHolderText='Search for movies or TV Series' />
-      <section className='page-content'>
+      <section className='home-content'>
         <section className='trending-wrapper'>
           <h2>Trending</h2>
           <div className='trending-media-wrapper'>

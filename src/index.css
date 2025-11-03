@@ -47,17 +47,31 @@
 
 
 .page-wrapper {
-  padding-top: 20px;
-  padding-left: 15px;
+  padding: 20px 0px;
   background-color: var(--blue-950);
   height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 25px;
   overflow-x: scroll;
+
+  > div {
+    margin: 0px 15px;
+  }
+
+  h2 {
+    margin: 0px 15px;
+    font-size: 20px;
+    font-weight: 200;
+  }
+
+  h4 {
+    font-size: 15px;
+    font-weight: 300;
+  }
 }
 
-.page-content {
+.home-content {
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -69,8 +83,9 @@
   gap: 15px;
 
   .trending-media-wrapper {
-    overflow-x: scroll;
     width: 100%;
+    padding: 0 15px;
+    overflow-x: scroll;
   }
 
   .trending {
@@ -81,27 +96,27 @@
 }
 
 .recommended-wrapper {
-  margin-right: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
 
   .recommended {
     display: grid;
-    gap: 15px;
     grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 0px 15px;
   }
 }
 
 .movies-wrapper {
-  margin-right: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
 
   .movies {
     display: grid;
-    gap: 15px;
     grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 0px 15px;
   }
 }
