@@ -1,10 +1,19 @@
 #search-wrapper {
   display: flex;
+  align-items: center;
 
   input {
     flex-grow: 1;
     background: none;
     border: none;
     padding: 10px 20px
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #search-wrapper {
+    input {
+      font-size: 20px;
+    }
   }
 }
