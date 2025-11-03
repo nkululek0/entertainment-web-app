@@ -98,3 +98,10 @@
   padding: 8px;
   border-radius: 8px;
 }
+
+@media screen and (min-width: 768px) {
+  .primary {
+    width: 60dvw;
+    height: 250px;
+  }
+}

@@ -2,6 +2,8 @@ import type { MediaItem } from '@/api/types';
 
 import style from './Media.module.css';
 
+import { useScreenWidth } from '@/hooks/hooks';
+
 type MediaProps = MediaItem & {
   type: 'primary' | 'secondary'
 };
@@ -43,12 +45,16 @@ const icons = {
 
 export function Media(props: MediaProps) {
   const { type, title, year, category, rating, isBookmarked, thumbnail } = props;
+  const screenWidth = useScreenWidth();
 
   return (
     <>
       {  type == 'primary' &&
         <article
-          style={{ backgroundImage: `url(${ thumbnail.trending?.small })`, backgroundSize: 'cover' }}
+          style={{
+            backgroundImage: screenWidth >= 768 ? `url(${ thumbnail.trending?.large })` :  `url(${ thumbnail.trending?.small })`,
+            backgroundSize: 'cover'
+          }}
           className={ style[type] }
         >
           <h4>{ title }</h4>
@@ -79,7 +85,9 @@ export function Media(props: MediaProps) {
           </section>
           <div
             className={ style['background'] }
-            style={{ backgroundImage: `url(${ thumbnail.regular.small })`, backgroundSize: 'cover' }}
+            style={{
+              backgroundImage: screenWidth >= 768 ? `url(${ thumbnail.regular.large })` : `url(${ thumbnail.regular.small })`,
+              backgroundSize: 'cover' }}
           >
             { isBookmarked ? icons.bookmark.filled : icons.bookmark.empty }
           </div>
