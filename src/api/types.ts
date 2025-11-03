@@ -1,30 +1,22 @@
-type MediaItem = {
-  title: string
-  year: number
-  category: string
-  rating: string
-  isBookmarked: boolean
-  isTrending: boolean
-};
+import { z } from 'zod';
 
-type RegularThumbnail = {
-  small: string
-  medium: string
-  large: string
-};
+export const MediaItemSchema = z.object({
+  title: z.string(),
+  year: z.number(),
+  category: z.string(),
+  rating: z.string(),
+  isBookmarked: z.boolean(),
+  isTrending: z.boolean(),
+  thumbnail: z.object({
+    regular: z.object({
+      small: z.string(),
+      large: z.string()
+    }),
+    trending: z.object({
+      small: z.string(),
+      large: z.string()
+    }).optional()
+  })
+});
 
-export type Regular = MediaItem & {
-  thumbnail: {
-    regular: RegularThumbnail
-  }
-};
-
-export type Trending = MediaItem & {
-  thumbnail: {
-    trending: {
-      small: string
-      large: string
-    }
-    regular: RegularThumbnail
-  }
-};
+export type MediaItem = z.infer<typeof MediaItemSchema>;

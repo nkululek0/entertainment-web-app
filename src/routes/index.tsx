@@ -4,8 +4,8 @@ import { Search } from '@/components/search';
 
 import { createFileRoute } from '@tanstack/react-router';
 
-import type { Trending } from '@/api/types';
-import { getTrending } from '@/api/trending';
+import type { MediaItem } from '@/api/types';
+import { getData } from '@/api/api';
 
 import { Media } from '@/components/media';
 
@@ -14,16 +14,17 @@ export const Route = createFileRoute('/')({
 });
 
 function RouteComponent() {
-  const [trendingMedia, setTrendingMedia] = useState<Trending[]>([]);
+  const [trendingMedia, setTrendingMedia] = useState<MediaItem[]>([]);
 
   useEffect(() => {
     const fetchTrending = async () => {
-      const trending = await getTrending();
-      setTrendingMedia(trending);
+      const data = await getData();
+      if (data && data.length > 0) {
+        setTrendingMedia(data.filter((item: MediaItem) => item.isTrending));
+      }
     };
 
     fetchTrending();
-    console.log(trendingMedia);
   }, [trendingMedia]);
 
   return (
@@ -35,7 +36,7 @@ function RouteComponent() {
           <div className='trending-media-wrapper'>
             <section className='trending'>
               {
-                trendingMedia.map((item: Trending, index: number) => {
+                trendingMedia.map((item: MediaItem, index: number) => {
                   return (
                     <Media
                       key={ index }
