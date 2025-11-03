@@ -1,18 +1,9 @@
+import type { MediaItem } from '@/api/types';
+
 import style from './Media.module.css';
 
-type MediaProps = {
+type MediaProps = MediaItem & {
   type: 'primary' | 'secondary'
-  title: string
-  year: number
-  category: string
-  rating: string
-  isBookmarked: boolean
-  thumbnail: {
-    regular: {
-      small: string
-      large: string
-    };
-  };
 };
 
 const icons = {
@@ -54,26 +45,46 @@ export function Media(props: MediaProps) {
   const { type, title, year, category, rating, isBookmarked, thumbnail } = props;
 
   return (
-    <article
-      style={
-        type == 'primary'
-          ? { backgroundImage: `url(${ thumbnail.regular.small })`, backgroundSize: 'cover' }
-          : {}
+    <>
+      {  type == 'primary' &&
+        <article
+          style={{ backgroundImage: `url(${ thumbnail.trending?.small })`, backgroundSize: 'cover' }}
+          className={ style[type] }
+        >
+          <h4>{ title }</h4>
+          <div className={ style['info-and-bookmark-container'] }>
+            <section className={ style['info'] }>
+              <p>{ year }</p>
+              <p className={ style['category'] }>
+                <span>{ category === 'Movie' ? icons.movie : icons.tv }</span>
+                <span>{ category }</span>
+              </p>
+              <p>{ rating }</p>
+            </section>
+            { isBookmarked ? icons.bookmark.filled : icons.bookmark.empty }
+          </div>
+        </article>
       }
-      className={ style[type] }
-    >
-      <h4>{ title }</h4>
-      <div className={ style['info-and-bookmark-container'] }>
-        <section className={ style['info'] }>
-          <p>{ year }</p>
-          <p className={ style['category'] }>
-            <span>{ category === 'Movie' ? icons.movie : icons.tv }</span>
-            <span>{ category }</span>
-          </p>
-          <p>{ rating }</p>
-        </section>
-        { isBookmarked ? icons.bookmark.filled : icons.bookmark.empty }
-      </div>
-    </article>
+      {
+        type == 'secondary' &&
+        <article className={ style[type] }>
+          <h4>{ title }</h4>
+          <section className={ style['info-secondary'] }>
+            <p>{ year }</p>
+            <p className={ style['category-secondary'] }>
+              <span>{ category === 'Movie' ? icons.movie : icons.tv }</span>
+              <span>{ category }</span>
+            </p>
+            <p>{ rating }</p>
+          </section>
+          <div
+            className={ style['background'] }
+            style={{ backgroundImage: `url(${ thumbnail.regular.small })`, backgroundSize: 'cover' }}
+          >
+            { isBookmarked ? icons.bookmark.filled : icons.bookmark.empty }
+          </div>
+        </article>
+      }
+    </>
   );
 };

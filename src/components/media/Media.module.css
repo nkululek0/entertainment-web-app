@@ -19,6 +19,8 @@
 .info {
   display: flex;
   gap: 10px;
+  font-size: 13px;
+  font-weight: 100;
 }
 
 .category {
@@ -32,4 +34,42 @@
   background-color: rgba(0, 0, 0, 0.5);
   padding: 10px;
   border-radius: 50%;
+}
+
+.secondary {
+  display: flex;
+  flex-direction: column-reverse;
+  flex: 1;
+  min-width: 40dvw;
+  height: 150px;
+  gap: 5px;
+}
+
+.info-secondary {
+  display: flex;
+  font-size: 13px;
+  font-weight: 100;
+  gap: 5px;
+}
+
+.category-secondary {
+  display: flex;
+  gap: 5px;
+}
+
+.bookmark-container-secondary {
+  display: flex;
+  align-self: flex-end;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.background {
+  height: 70%;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column-reverse;
+  padding: 8px;
+  border-radius: 8px;
 }
