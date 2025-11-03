@@ -87,8 +87,21 @@
   gap: 15px;
 
   .recommended {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 15px;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.movies-wrapper {
+  margin-right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .movies {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: 1fr 1fr;
   }
 }
