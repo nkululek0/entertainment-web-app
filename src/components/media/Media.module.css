@@ -56,7 +56,7 @@
   flex-direction: column-reverse;
   min-width: 40dvw;
   height: 150px;
-  gap: 5px;
+  gap: 0.5rem;
 }
 
 .info-secondary {
@@ -86,7 +86,7 @@
 }
 
 .background {
-  height: 70%;
+  height: 75%;
   display: flex;
   justify-content: flex-end;
   flex-direction: column-reverse;
@@ -111,5 +111,16 @@
     p {
       gap: 10px;
     }
+  }
+}
+
+@media screen and (min-width: 1120px) {
+  .primary {
+    width: 30dvw;
+    height: 200px;
+  }
+
+  .secondary {
+    min-width: 15dvw;
   }
 }

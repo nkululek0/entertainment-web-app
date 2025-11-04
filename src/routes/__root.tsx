@@ -76,7 +76,9 @@ function RootLayout() {
             </Link>
           </li>
         </ol>
-        <img src={ Avatar } alt='profile image' className='profile-image' />
+        <div className="profile-image-container">
+          <img src={ Avatar } alt='profile image' className='profile-image' />
+        </div>
       </nav>
       <Outlet />
       <TanStackRouterDevtools />
