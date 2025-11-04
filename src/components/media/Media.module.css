@@ -25,15 +25,13 @@
   p {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
   }
 
-  p::after {
+  p:not(:last-child)::after {
     content: "";
-    width: 2px;
     display: inline-block;
-    border: 1px #fff solid;
-    height: 2px;
+    border: 2px #fff solid;
     border-radius: 50%;
     background-color: #fff;
   }
@@ -56,7 +54,6 @@
 .secondary {
   display: flex;
   flex-direction: column-reverse;
-  flex: 1;
   min-width: 40dvw;
   height: 150px;
   gap: 5px;
@@ -74,12 +71,10 @@
     gap: 5px;
   }
 
-  p::after {
+  p:not(:last-child)::after {
     content: "";
-    width: 1px;
     display: inline-block;
     border: 1px #fff solid;
-    height: 1px;
     border-radius: 50%;
     background-color: #fff;
   }
@@ -103,5 +98,18 @@
   .primary {
     width: 60dvw;
     height: 250px;
+  }
+
+  .secondary {
+    min-width: 29dvw;
+    height: 200px;
+  }
+
+  .info-secondary {
+    gap: 10px;
+
+    p {
+      gap: 10px;
+    }
   }
 }
