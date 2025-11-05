@@ -1,5 +1,3 @@
-import { Search } from '@/components/search';
-
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 
 import type { MediaItem } from '@/api/types';
@@ -32,29 +30,26 @@ function RouteComponent() {
   const movies = data?.filter((item: MediaItem) => item.category === 'Movie');
 
   return (
-    <section className='page-wrapper'>
-      <Search placeHolderText='Search for movies' />
-      <section className='movies-wrapper'>
-        <h2>Movies</h2>
-        <section className="movies">
-          {
-            movies?.map((item, index) => {
-              return (
-                <Media
-                  key={ index }
-                  type='secondary'
-                  title={ item.title }
-                  year={ item.year }
-                  category={ item.category }
-                  rating={ item.rating }
-                  isBookmarked={ item.isBookmarked }
-                  isTrending={ item.isTrending }
-                  thumbnail={ item.thumbnail }
-                />
-              );
-            })
-          }
-        </section>
+    <section className='movies-wrapper'>
+      <h2>Movies</h2>
+      <section className="movies">
+        {
+          movies?.map((item, index) => {
+            return (
+              <Media
+                key={ index }
+                type='secondary'
+                title={ item.title }
+                year={ item.year }
+                category={ item.category }
+                rating={ item.rating }
+                isBookmarked={ item.isBookmarked }
+                isTrending={ item.isTrending }
+                thumbnail={ item.thumbnail }
+              />
+            );
+          })
+        }
       </section>
     </section>
   );

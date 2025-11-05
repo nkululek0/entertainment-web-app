@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TvSeriesRouteImport } from './routes/tv-series'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as MoviesRouteImport } from './routes/movies'
 import { Route as BookmarkRouteImport } from './routes/bookmark'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const TvSeriesRoute = TvSeriesRouteImport.update({
   id: '/tv-series',
   path: '/tv-series',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoviesRoute = MoviesRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bookmark': typeof BookmarkRoute
   '/movies': typeof MoviesRoute
+  '/search': typeof SearchRoute
   '/tv-series': typeof TvSeriesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bookmark': typeof BookmarkRoute
   '/movies': typeof MoviesRoute
+  '/search': typeof SearchRoute
   '/tv-series': typeof TvSeriesRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bookmark': typeof BookmarkRoute
   '/movies': typeof MoviesRoute
+  '/search': typeof SearchRoute
   '/tv-series': typeof TvSeriesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bookmark' | '/movies' | '/tv-series'
+  fullPaths: '/' | '/bookmark' | '/movies' | '/search' | '/tv-series'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bookmark' | '/movies' | '/tv-series'
-  id: '__root__' | '/' | '/bookmark' | '/movies' | '/tv-series'
+  to: '/' | '/bookmark' | '/movies' | '/search' | '/tv-series'
+  id: '__root__' | '/' | '/bookmark' | '/movies' | '/search' | '/tv-series'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BookmarkRoute: typeof BookmarkRoute
   MoviesRoute: typeof MoviesRoute
+  SearchRoute: typeof SearchRoute
   TvSeriesRoute: typeof TvSeriesRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/tv-series'
       fullPath: '/tv-series'
       preLoaderRoute: typeof TvSeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/movies': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BookmarkRoute: BookmarkRoute,
   MoviesRoute: MoviesRoute,
+  SearchRoute: SearchRoute,
   TvSeriesRoute: TvSeriesRoute,
 }
 export const routeTree = rootRouteImport

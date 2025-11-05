@@ -1,11 +1,25 @@
+import type { ChangeEvent } from 'react';
+
 import style from './Search.module.css';
 
 type SearchProps = {
   placeHolderText: string
+  onSearch: (searchInput: string) => void
+  search: string
 };
 
 export function Search(props: SearchProps) {
-  const { placeHolderText } = props;
+  const { placeHolderText, onSearch, search } = props;
+  let handleChangeTimeOut: ReturnType<typeof setTimeout>;
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(handleChangeTimeOut);
+
+    handleChangeTimeOut = setTimeout(() => {
+      onSearch(event.target.value);
+      console.log("handleChange in search has been called");
+    }, 1500);
+  };
 
   return (
     <div id={ style['search-wrapper'] }>
@@ -14,7 +28,12 @@ export function Search(props: SearchProps) {
           d='M27.613 25.72 23.08 21.2a10.56 10.56 0 0 0 2.253-6.533C25.333 8.776 20.558 4 14.667 4S4 8.776 4 14.667c0 5.89 4.776 10.666 10.667 10.666A10.56 10.56 0 0 0 21.2 23.08l4.52 4.533a1.333 1.333 0 0 0 1.893 0 1.333 1.333 0 0 0 0-1.893ZM6.667 14.667a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z'
           fill='#FFF'/>
       </svg>
-      <input type='text' placeholder={ placeHolderText } />
+      <input
+        type='text'
+        placeholder={ placeHolderText }
+        defaultValue={ search }
+        onChange={ handleChange }
+      />
     </div>
   );
 };
