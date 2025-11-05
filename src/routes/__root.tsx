@@ -1,5 +1,9 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+import { useRef } from 'react';
+
+import { createRootRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+
+import { Search } from '@/components/search';
 
 import Avatar from '@/assets/image-avatar.png';
 
@@ -10,6 +14,13 @@ const colours = {
 };
 
 function RootLayout() {
+  const searchRef = useRef('');
+  const navigate = useNavigate();
+
+  const handleSearch = (searchInput: string) => {
+    searchRef.current = searchInput;
+    navigate({ from: '/search', search: { query: searchRef.current } });
+  };
 
   return (
     <>
@@ -80,7 +91,16 @@ function RootLayout() {
           <img src={ Avatar } alt='profile image' className='profile-image' />
         </div>
       </nav>
-      <Outlet />
+      <div className="page-wrapper">
+        <Link to='/search' search={{ query: searchRef.current }}>
+          <Search
+            search={ searchRef.current }
+            onSearch={ handleSearch }
+            placeHolderText='Search for movies or TV series'
+          />
+        </Link>
+        <Outlet />
+      </div>
       <TanStackRouterDevtools />
     </>
   );
