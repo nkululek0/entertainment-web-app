@@ -116,11 +116,11 @@
 
 @media screen and (min-width: 1120px) {
   .primary {
-    width: 30dvw;
+    width: 400px;
     height: 200px;
   }
 
   .secondary {
-    min-width: 15dvw;
+    min-width: 150px;
   }
 }
