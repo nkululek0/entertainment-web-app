@@ -16,19 +16,21 @@ export const Route = createFileRoute('/search')({
   loaderDeps: ({ search: { query, category }}) => ({ query, category }),
   loader: async ({ deps: { query, category }}) => {
     let searchResult: MediaItem[] = [];
+    const data = await getData();
+
+    if (data && data.length > 0) {
+      searchResult = data;
+    }
+    else {
+      throw Error();
+    }
+
     if (query) {
-      const data = await getData();
+      searchResult = data.filter((item: MediaItem) => item.title.toLowerCase().includes(query.toLowerCase()));
+    }
 
-      if (data && data.length > 0 ) {
-        searchResult = data.filter((item: MediaItem) => item.title.toLowerCase().includes(query.toLowerCase()));
-
-        if (category) {
-          searchResult = searchResult.filter((item: MediaItem) => item.category === category);
-        }
-      }
-      else {
-        throw Error();
-      }
+    if (category) {
+      searchResult = searchResult.filter((item: MediaItem) => item.category === category);
     }
 
     return { searchResult };
