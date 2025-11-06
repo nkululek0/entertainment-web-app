@@ -7,22 +7,38 @@ import { Media } from '@/components/media';
 
 export const Route = createFileRoute('/search')({
   component: RouteComponent,
-  validateSearch: (search: { query: string}) => {
+  validateSearch: (search: { query: string, category: string}) => {
     return {
-      query: (search.query) || ''
+      query: (search.query) || '',
+      category: (search.category) || ''
     }
   },
-  loaderDeps: ({ search: { query }}) => ({ query }),
-  loader: async ({ deps: { query }}) => {
+  loaderDeps: ({ search: { query, category }}) => ({ query, category }),
+  loader: async ({ deps: { query, category }}) => {
     let searchResult: MediaItem[] = [];
-    const data = await getData();
+    if (query) {
+      const data = await getData();
 
-    if (data && data.length > 0 && query) {
-      searchResult = data.filter((item: MediaItem) => item.title.toLowerCase().includes(query.toLowerCase()));
+      if (data && data.length > 0 ) {
+        searchResult = data.filter((item: MediaItem) => item.title.toLowerCase().includes(query.toLowerCase()));
+
+        if (category) {
+          searchResult = searchResult.filter((item: MediaItem) => item.category === category);
+        }
+      }
+      else {
+        throw Error();
+      }
     }
 
     return { searchResult };
   },
+  pendingComponent: () => {
+    return <div className='loading'>Loading...</div>;
+  },
+  errorComponent: () => {
+    return <div className='error'>There was an issue loading the search results</div>;
+  }
 });
 
 function RouteComponent() {
@@ -46,7 +62,7 @@ function RouteComponent() {
           searchResult.length > 0 && (
             searchResult.length == 1
             ? <h2>{ searchResult.length } result found for '{ query }'</h2>
-            : <h2>Found { searchResult.length } results found for '{ query }'</h2>
+            : <h2>Found { searchResult.length } results for '{ query }'</h2>
           )
         )
       }
