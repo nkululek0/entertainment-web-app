@@ -7,14 +7,15 @@ import { Media } from '@/components/media';
 
 export const Route = createFileRoute('/search')({
   component: RouteComponent,
-  validateSearch: (search: { query: string, category: string}) => {
+  validateSearch: (search: { query: string, category: string, isBookmarked: boolean }) => {
     return {
       query: (search.query) || '',
-      category: (search.category) || ''
+      category: (search.category) || '',
+      isBookmarked: (search.isBookmarked) || false
     }
   },
-  loaderDeps: ({ search: { query, category }}) => ({ query, category }),
-  loader: async ({ deps: { query, category }}) => {
+  loaderDeps: ({ search: { query, category, isBookmarked }}) => ({ query, category, isBookmarked }),
+  loader: async ({ deps: { query, category, isBookmarked }}) => {
     let searchResult: MediaItem[] = [];
     const data = await getData();
 
@@ -31,6 +32,10 @@ export const Route = createFileRoute('/search')({
 
     if (category) {
       searchResult = searchResult.filter((item: MediaItem) => item.category === category);
+    }
+
+    if (isBookmarked) {
+      searchResult = searchResult.filter((item: MediaItem) => item.isBookmarked);
     }
 
     return { searchResult };

@@ -50,7 +50,14 @@ function RootLayout() {
 
   const handleSearch = (searchInput: string) => {
     searchRef.current = searchInput;
-    navigate({ from: '/search', search: { query: searchRef.current, category: searchCategory[previousLocation.current] } });
+    navigate({
+      from: '/search',
+      search: {
+        query: searchRef.current,
+        category: searchCategory[previousLocation.current],
+        isBookmarked: previousLocation.current == '/bookmark'
+      }
+    });
   };
 
   return (
@@ -131,7 +138,14 @@ function RootLayout() {
         </div>
       </nav>
       <div className="page-wrapper">
-        <Link to='/search' search={{ query: searchRef.current, category: searchCategory[previousLocation.current] }}>
+        <Link
+          to='/search'
+          search={{
+            query: searchRef.current,
+            category: searchCategory[previousLocation.current],
+            isBookmarked: previousLocation.current == '/bookmark'
+          }}
+        >
           <Search
             search={ searchRef.current }
             onSearch={ handleSearch }
