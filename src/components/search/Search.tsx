@@ -4,6 +4,8 @@ import type { ChangeEvent } from 'react';
 
 import style from './Search.module.css';
 
+import { LoadSpinner } from '../load-spinner';
+
 type SearchProps = {
   placeHolderText: string
   onSearch: (searchInput: string) => void
@@ -26,10 +28,10 @@ export function Search(props: SearchProps) {
   };
 
   return (
-    <div id={ style['search-wrapper'] }>
+    <div className={ style['search-wrapper'] }>
       {
         loading &&
-        <div className={ style["spinner"] }></div>
+        <LoadSpinner />
       }
       {
         !loading &&

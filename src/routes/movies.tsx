@@ -3,31 +3,42 @@ import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import type { MediaItem } from '@/api/types';
 import { getData } from '@/api/api';
 
+import { LoadSpinner } from '@/components/load-spinner';
 import { Media } from '@/components/media';
 
 export const Route = createFileRoute('/movies')({
   component: RouteComponent,
   loader: async () => {
+    let movies: MediaItem[] = [];
     const data = await getData();
 
     if (data && data.length > 0) {
-      return data;
+      movies = data.filter((item: MediaItem) => item.category === 'Movie');
     }
     else {
       throw Error();
     }
+
+    return { movies };
   },
   pendingComponent: () => {
-    return <div className='loading'>Loading...</div>;
+    return (
+      <div className='loading'>
+        <LoadSpinner width={ 82 } height={ 82 } />
+      </div>
+    );
   },
   errorComponent: () => {
-    return <div className='error'>There was an issue loading the component data</div>;
+    return (
+      <div className='error'>
+        <h2>There was an issue loading the movies data.</h2>
+      </div>
+    );
   }
 })
 
 function RouteComponent() {
-  const data = useLoaderData({ from: '/movies' });
-  const movies = data?.filter((item: MediaItem) => item.category === 'Movie');
+  const { movies } = useLoaderData({ from: '/movies' });
 
   return (
     <section className='movies-wrapper'>

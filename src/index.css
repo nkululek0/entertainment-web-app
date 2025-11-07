@@ -23,6 +23,13 @@
   background-color: var(--blue-950);
 }
 
+.loading {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #page-navigator-wrapper {
   display: flex;
   justify-content: space-between;
