@@ -32,7 +32,7 @@ export const Route = createFileRoute('/bookmark')({
   errorComponent: () => {
     return (
       <div className='error'>
-        <h2>There was an issue loading the bookmark data.</h2>
+        <h2>There was an issue loading the bookmark data :(</h2>
       </div>
     );
   }

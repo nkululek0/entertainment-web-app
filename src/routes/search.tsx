@@ -3,6 +3,7 @@ import { createFileRoute, useSearch, useLoaderData } from '@tanstack/react-route
 import { getData } from '@/api/api';
 import type { MediaItem } from '@/api/types';
 
+import { LoadSpinner } from '@/components/load-spinner';
 import { Media } from '@/components/media';
 
 export const Route = createFileRoute('/search')({
@@ -41,10 +42,18 @@ export const Route = createFileRoute('/search')({
     return { searchResult };
   },
   pendingComponent: () => {
-    return <div className='loading'>Loading...</div>;
+    return (
+      <div className='loading'>
+        <LoadSpinner width={ 82 } height={ 82 } />
+      </div>
+    );
   },
   errorComponent: () => {
-    return <div className='error'>There was an issue loading the search results</div>;
+    return (
+      <div className='error'>
+        <h2>There was an issue loading the search results :(</h2>
+      </div>
+    );
   }
 });
 

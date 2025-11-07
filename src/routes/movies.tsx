@@ -31,7 +31,7 @@ export const Route = createFileRoute('/movies')({
   errorComponent: () => {
     return (
       <div className='error'>
-        <h2>There was an issue loading the movies data.</h2>
+        <h2>There was an issue loading the movies data :(</h2>
       </div>
     );
   }

@@ -1,18 +1,26 @@
+import { useRef } from 'react';
+import type { RefObject } from 'react';
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
+import { useDraggable } from 'react-use-draggable-scroll';
 
 import type { MediaItem } from '@/api/types';
 import { getData } from '@/api/api';
 
+import { LoadSpinner } from '@/components/load-spinner';
 import { Media } from '@/components/media';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
   loader: async () => {
-    const result: { data: MediaItem[] } = { data: [] };
+    const result: { trendingMedia: MediaItem[], recommended: MediaItem[] } = {
+      trendingMedia: [],
+      recommended: []
+    };
     const data = await getData();
 
     if (data && data.length > 0) {
-      result.data = data;
+      result.trendingMedia = data.filter((item: MediaItem) => item.isTrending);
+      result.recommended = data.filter((item: MediaItem) => !item.isTrending);
     }
     else {
       throw Error();
@@ -21,24 +29,35 @@ export const Route = createFileRoute('/')({
     return result;
   },
   pendingComponent: () => {
-    return <div className='loading'>Loading...</div>;
+    return (
+      <div className='loading'>
+        <LoadSpinner width={ 82 } height={ 82 } />
+      </div>
+    );
   },
   errorComponent: () => {
-    return <div className='error'>There was an issue loading the component data</div>;
+    return (
+      <div className='error'>
+        <h2>There was an issue loading the data :(</h2>
+      </div>
+    );
   }
 });
 
 function RouteComponent() {
-  const { data } = useLoaderData({ from: '/' });
-  console.log({ data });
-  const trendingMedia = data?.filter((item: MediaItem) => item.isTrending);
-  const recommended = data?.filter((item: MediaItem) => !item.isTrending);
+  const draggableRef = useRef<HTMLDivElement>(null) as RefObject<HTMLInputElement>;
+  const { events } = useDraggable(draggableRef, { applyRubberBandEffect: true });
+  const { trendingMedia, recommended } = useLoaderData({ from: '/' });
 
   return (
     <section className='home-content'>
       <section className='trending-wrapper'>
         <h2>Trending</h2>
-        <div className='trending-media-wrapper'>
+        <div
+          className='trending-media-wrapper'
+          { ...events }
+          ref={ draggableRef }
+        >
           <section className='trending'>
             {
               trendingMedia?.map((item: MediaItem, index: number) => {

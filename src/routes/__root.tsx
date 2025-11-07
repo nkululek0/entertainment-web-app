@@ -43,10 +43,24 @@ function RootLayout() {
   const searchRef = useRef('');
   const navigate = useNavigate();
   const location = useRouterState({ select: (s) => s.location });
-  const previousLocation = useRef('/');
-  const searchPlaceHolder = searchPlaceHolderText[location.pathname];
+  const previousLocation = useRef<string>('');
 
-  previousLocation.current = location.pathname != '/search' ? location.pathname : previousLocation.current;
+  if (Object.values(location.search).length > 0) {
+    const search = location.search;
+
+    if (search.category) {
+      if (search.category == 'Movie') previousLocation.current = '/movies';
+      else previousLocation.current = '/tv-series';
+    }
+    if (search.isBookmarked) previousLocation.current = '/bookmark';
+  }
+  else {
+    if (!previousLocation.current || previousLocation.current != location.pathname) {
+      previousLocation.current = location.pathname;
+    }
+  }
+
+  const searchPlaceHolder = searchPlaceHolderText[previousLocation.current];
 
   const handleSearch = (searchInput: string) => {
     searchRef.current = searchInput;
