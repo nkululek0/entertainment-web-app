@@ -3,11 +3,11 @@ import type { RefObject } from 'react';
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { useDraggable } from 'react-use-draggable-scroll';
 
-import type { MediaItem, Show } from '@/api/types';
+import type { Show } from '@/api/types';
 import { movies, tvSeries } from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
-import { Media, Card } from '@/components/media';
+import { Card } from '@/components/media';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
