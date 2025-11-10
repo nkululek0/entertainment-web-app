@@ -4,7 +4,7 @@ import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { useDraggable } from 'react-use-draggable-scroll';
 
 import type { MediaItem, Show } from '@/api/types';
-import { getData, movies, tvSeries } from '@/api/api';
+import { movies, tvSeries } from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
 import { Media, Card } from '@/components/media';
@@ -12,18 +12,32 @@ import { Media, Card } from '@/components/media';
 export const Route = createFileRoute('/')({
   component: RouteComponent,
   loader: async () => {
-    const result: { trendingMedia: Show[], recommended: MediaItem[] } = {
+    const result: { trendingMedia: Show[], recommended: Show[] } = {
       trendingMedia: [],
       recommended: []
     };
 
-    const [data, trendingMovies, trendingTvSeries] = await Promise.all([getData(), movies.getPopular(), tvSeries.getPopular()]);
+    const [
+      trendingMovies,
+      trendingTvSeries,
+      topRatedMovies,
+      topRatedSeries
+    ] = await Promise.all([
+      movies.getTrending(),
+      tvSeries.getTrending(),
+      movies.getTopRated(),
+      tvSeries.getTopRated()
+    ]);
+
     const trending = [...trendingMovies.slice(0, 5), ...trendingTvSeries.slice(0, 5)];
     trending.sort((a: Show, b: Show) => b.popularity - a.popularity);
 
-    if (data && data.length > 0) {
+    const recommended = [...topRatedMovies.results, ...topRatedSeries.results];
+    recommended.sort((a: Show, b: Show) => b.popularity - a.popularity);
+
+    if (trending && trending.length > 0 && recommended && recommended.length > 0) {
       result.trendingMedia = trending;
-      result.recommended = data.filter((item: MediaItem) => !item.isTrending);
+      result.recommended = recommended;
     }
     else {
       throw Error();
@@ -86,18 +100,17 @@ function RouteComponent() {
         <h2>Recommended for you</h2>
         <section className='recommended'>
           {
-            recommended?.map((item: MediaItem, index: number) => {
+            recommended?.map((item: Show, index: number) => {
               return (
-                <Media
+                <Card
                   key={ index }
                   type='secondary'
                   title={ item.title }
-                  year={ item.year }
-                  category={ item.category }
-                  rating={ item.rating }
-                  isBookmarked={ item.isBookmarked }
-                  isTrending={ item.isTrending }
-                  thumbnail={ item.thumbnail }
+                  name={ item.name }
+                  release_date={ item.release_date }
+                  first_air_date={ item.first_air_date }
+                  poster_path={ item.poster_path }
+                  vote_average={ item.vote_average }
                 />
               );
             })

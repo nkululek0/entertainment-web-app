@@ -14,19 +14,31 @@ export async function getData() {
 };
 
 export const movies = {
-  getPopular: async () => {
+  getTrending: async () => {
     const response = await fetch(`${ BASE_URL }/trending/movie/day?api_key=${ API_KEY }&language=en-US`);
     const responseData = await response.json();
 
     return responseData.results;
+  },
+  getTopRated: async (page: number = 1) => {
+    const response = await fetch(`${ BASE_URL }/movie/top_rated?api_key=${ API_KEY }&language=en-US&page=${ page }`);
+    const responseData = await response.json();
+
+    return responseData;
   }
 };
 
 export const tvSeries = {
-  getPopular: async () => {
+  getTrending: async () => {
     const response = await fetch(`${ BASE_URL }/trending/tv/day?api_key=${ API_KEY }&language=en-US`);
     const responseData = await response.json();
 
     return responseData.results;
+  },
+  getTopRated: async (page: number = 1) => {
+    const response = await fetch(`${ BASE_URL }/tv/top_rated?api_key=${ API_KEY }&language=en-US&page=${ page }`);
+    const responseData = await response.json();
+
+    return responseData;
   }
 };

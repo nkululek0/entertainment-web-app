@@ -107,7 +107,7 @@ export function Media(props: MediaProps) {
 
 type CardProps = {
   type: 'primary' | 'secondary'
-  media_type: 'movie' | 'tv'
+  media_type?: 'movie' | 'tv'
   title?: string
   name?: string
   release_date?: string
@@ -140,6 +140,28 @@ export function Card(props: CardProps) {
               </p>
               <p>{ icons.star } { vote_average.toFixed(1) }</p>
             </section>
+            { icons.bookmark.empty }
+          </div>
+        </article>
+      }
+      {
+        type == 'secondary' &&
+        <article className={ style[type] }>
+          <h4>{  title ? title : name }</h4>
+          <section className={ style['info-secondary'] }>
+            <p>{ title ? release_date?.split('-')[0] : first_air_date?.split('-')[0] }</p>
+            <p className={ style['category-secondary'] }>
+              <span>{ title ? icons.movie : icons.tv }</span>
+              <span>{ title ? 'Movie' : 'TV Series' }</span>
+            </p>
+            <p>{ icons.star } { vote_average.toFixed(1) }</p>
+          </section>
+          <div
+            className={ style['background'] }
+            style={{
+              backgroundImage: `url(${ imageBaseURL + poster_path })`,
+              backgroundSize: 'cover' }}
+          >
             { icons.bookmark.empty }
           </div>
         </article>
