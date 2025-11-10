@@ -3,23 +3,26 @@ import type { RefObject } from 'react';
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { useDraggable } from 'react-use-draggable-scroll';
 
-import type { MediaItem } from '@/api/types';
-import { getData } from '@/api/api';
+import type { MediaItem, Show } from '@/api/types';
+import { getData, movies, tvSeries } from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
-import { Media } from '@/components/media';
+import { Media, Card } from '@/components/media';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
   loader: async () => {
-    const result: { trendingMedia: MediaItem[], recommended: MediaItem[] } = {
+    const result: { trendingMedia: Show[], recommended: MediaItem[] } = {
       trendingMedia: [],
       recommended: []
     };
-    const data = await getData();
+
+    const [data, trendingMovies, trendingTvSeries] = await Promise.all([getData(), movies.getPopular(), tvSeries.getPopular()]);
+    const trending = [...trendingMovies.slice(0, 5), ...trendingTvSeries.slice(0, 5)];
+    trending.sort((a: Show, b: Show) => b.popularity - a.popularity);
 
     if (data && data.length > 0) {
-      result.trendingMedia = data.filter((item: MediaItem) => item.isTrending);
+      result.trendingMedia = trending;
       result.recommended = data.filter((item: MediaItem) => !item.isTrending);
     }
     else {
@@ -60,18 +63,18 @@ function RouteComponent() {
         >
           <section className='trending'>
             {
-              trendingMedia?.map((item: MediaItem, index: number) => {
+              trendingMedia?.map((item: Show, index: number) => {
                 return (
-                  <Media
+                  <Card
                     key={ index }
                     type='primary'
+                    media_type={ item.media_type }
                     title={ item.title }
-                    year={ item.year }
-                    category={ item.category }
-                    rating={ item.rating }
-                    isBookmarked={ item.isBookmarked }
-                    isTrending={ item.isTrending }
-                    thumbnail={ item.thumbnail }
+                    name={ item.name }
+                    release_date={ item.release_date }
+                    first_air_date={ item.first_air_date }
+                    poster_path={ item.poster_path }
+                    vote_average={ item.vote_average }
                   />
                 );
               })
