@@ -46,5 +46,24 @@ export const tvSeries = {
     const responseData = await response.json();
 
     return responseData;
+  },
+  getPopular: async (page: number = 1) => {
+    const response = await fetch(`${ BASE_URL }/tv/popular?api_key=${ API_KEY }&language=en-US&page=${ page }`);
+    const responseData = await response.json();
+
+    return responseData;
   }
 };
+
+type ShowType = 'movie' | 'tv';
+
+const API = {
+  async getPopular(type: ShowType, page: number = 1) {
+    const response = await fetch(`${ BASE_URL }/${ type }/popular?api_key=${ API_KEY }&language=en-US&page=${ page }`);
+    const responseData = await response.json();
+
+    return responseData
+  }
+};
+
+export default API;
