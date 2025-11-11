@@ -7,7 +7,7 @@ import type { Show } from '@/api/types';
 import API from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
-import { Card } from '@/components/media';
+import { Card } from '@/components/card';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
