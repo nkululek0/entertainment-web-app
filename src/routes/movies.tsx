@@ -1,7 +1,7 @@
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 
 import type { Show } from '@/api/types';
-import { movies } from '@/api/api';
+import API from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/media';
@@ -10,10 +10,10 @@ export const Route = createFileRoute('/movies')({
   component: RouteComponent,
   loader: async () => {
     const result: { movies: Show[] } = { movies: [] };
-    const data = await movies.getPopular();
+    const data = await API.getPopular('movie');
 
     if (data && data.results.length > 0) {
-      result.movies = data.results.filter((item: Show) => item.title);
+      result.movies = data.results;
     }
     else {
       throw Error();
