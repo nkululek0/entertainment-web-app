@@ -25,6 +25,12 @@ export const movies = {
     const responseData = await response.json();
 
     return responseData;
+  },
+  getPopular: async (page: number = 1) => {
+    const response = await fetch(`${ BASE_URL }/movie/popular?api_key=${ API_KEY }&language=en-US&page=${ page }`);
+    const responseData = await response.json();
+
+    return responseData;
   }
 };
 

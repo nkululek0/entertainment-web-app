@@ -27,7 +27,7 @@ export const ShowSchema = z.object({
   first_air_date: z.string().optional(), //(yyy-mm-dd) ~ tv series
   genre_ids: z.array(z.number()),
   id: z.number(),
-  media_type: z.union([z.literal('movie'), z.literal('tv')]),
+  media_type: z.union([z.literal('movie'), z.literal('tv')]).optional(),
   name: z.string().optional(), // ~ tv series
   origin_country: z.array(z.string()),
   original_language: z.string(),
