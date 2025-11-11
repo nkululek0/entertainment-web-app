@@ -1,4 +1,4 @@
-import { MediaItemSchema } from './types';
+import { MediaItemSchema, ShowResponseSchema } from './types';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -13,56 +13,33 @@ export async function getData() {
   }
 };
 
-export const movies = {
-  getTrending: async () => {
-    const response = await fetch(`${ BASE_URL }/trending/movie/day?api_key=${ API_KEY }&language=en-US`);
-    const responseData = await response.json();
-
-    return responseData.results;
-  },
-  getTopRated: async (page: number = 1) => {
-    const response = await fetch(`${ BASE_URL }/movie/top_rated?api_key=${ API_KEY }&language=en-US&page=${ page }`);
-    const responseData = await response.json();
-
-    return responseData;
-  },
-  getPopular: async (page: number = 1) => {
-    const response = await fetch(`${ BASE_URL }/movie/popular?api_key=${ API_KEY }&language=en-US&page=${ page }`);
-    const responseData = await response.json();
-
-    return responseData;
-  }
-};
-
-export const tvSeries = {
-  getTrending: async () => {
-    const response = await fetch(`${ BASE_URL }/trending/tv/day?api_key=${ API_KEY }&language=en-US`);
-    const responseData = await response.json();
-
-    return responseData.results;
-  },
-  getTopRated: async (page: number = 1) => {
-    const response = await fetch(`${ BASE_URL }/tv/top_rated?api_key=${ API_KEY }&language=en-US&page=${ page }`);
-    const responseData = await response.json();
-
-    return responseData;
-  },
-  getPopular: async (page: number = 1) => {
-    const response = await fetch(`${ BASE_URL }/tv/popular?api_key=${ API_KEY }&language=en-US&page=${ page }`);
-    const responseData = await response.json();
-
-    return responseData;
-  }
-};
-
 type ShowType = 'movie' | 'tv';
 
-const API = {
-  async getPopular(type: ShowType, page: number = 1) {
-    const response = await fetch(`${ BASE_URL }/${ type }/popular?api_key=${ API_KEY }&language=en-US&page=${ page }`);
-    const responseData = await response.json();
+const processResponse = async (url: string) => {
+  const response = await fetch(url);
+  const responseData = await response.json();
+  const validData = ShowResponseSchema.safeParse(responseData);
 
-    return responseData
+  if (validData.success) {
+    return validData.data;
+  }
+};
+
+const API = {
+  getTrending: async (type: ShowType) => {
+    const data = await processResponse(`${ BASE_URL }/trending/${ type }/day?api_key=${ API_KEY }&language=en-US`);
+
+    return data;
+  },
+  getTopRated: async (type: ShowType, page: number = 1) => {
+    const data = await processResponse(`${ BASE_URL }/${ type }/top_rated?api_key=${ API_KEY }&language=en-US&page=${ page }`);
+
+    return data;
+  },
+  async getPopular(type: ShowType, page: number = 1) {
+    const data = await processResponse(`${ BASE_URL }/${ type }/popular?api_key=${ API_KEY }&language=en-US&page=${ page }`);
+
+    return data;
   }
 };
 

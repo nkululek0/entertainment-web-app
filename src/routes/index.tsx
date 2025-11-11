@@ -4,7 +4,7 @@ import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { useDraggable } from 'react-use-draggable-scroll';
 
 import type { Show } from '@/api/types';
-import { movies, tvSeries } from '@/api/api';
+import API from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/media';
@@ -23,19 +23,19 @@ export const Route = createFileRoute('/')({
       topRatedMovies,
       topRatedSeries
     ] = await Promise.all([
-      movies.getTrending(),
-      tvSeries.getTrending(),
-      movies.getTopRated(),
-      tvSeries.getTopRated()
+      API.getTrending('movie'),
+      API.getTrending('tv'),
+      API.getTopRated('movie'),
+      API.getTopRated('tv')
     ]);
 
-    const trending = [...trendingMovies.slice(0, 5), ...trendingTvSeries.slice(0, 5)];
-    trending.sort((a: Show, b: Show) => b.popularity - a.popularity);
+    if (trendingMovies && trendingTvSeries && topRatedMovies && topRatedSeries) {
+      const trending = [...trendingMovies.results.slice(0, 5), ...trendingTvSeries.results.slice(0, 5)];
+      trending.sort((a: Show, b: Show) => b.popularity - a.popularity);
 
-    const recommended = [...topRatedMovies.results, ...topRatedSeries.results];
-    recommended.sort((a: Show, b: Show) => b.popularity - a.popularity);
+      const recommended = [...topRatedMovies.results, ...topRatedSeries.results];
+      recommended.sort((a: Show, b: Show) => b.popularity - a.popularity);
 
-    if (trending && trending.length > 0 && recommended && recommended.length > 0) {
       result.trendingMedia = trending;
       result.recommended = recommended;
     }
