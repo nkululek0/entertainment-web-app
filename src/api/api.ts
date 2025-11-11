@@ -1,17 +1,7 @@
-import { MediaItemSchema, ShowResponseSchema } from './types';
+import { ShowResponseSchema } from './types';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-export async function getData() {
-  const response = await fetch('/data.json');
-  const data = await response.json();
-  const validData = MediaItemSchema.array().safeParse(data);
-
-  if (validData.success) {
-    return validData.data;
-  }
-};
 
 type ShowType = 'movie' | 'tv';
 
