@@ -1,7 +1,7 @@
 import { createFileRoute, useSearch, useLoaderData } from '@tanstack/react-router';
 
-import { getData } from '@/api/api';
-import type { MediaItem } from '@/api/types';
+// import { getData } from '@/api/api';
+// import type { MediaItem } from '@/api/types';
 
 import { LoadSpinner } from '@/components/load-spinner';
 import { Media } from '@/components/media';
@@ -16,30 +16,30 @@ export const Route = createFileRoute('/search')({
     }
   },
   loaderDeps: ({ search: { query, category, isBookmarked }}) => ({ query, category, isBookmarked }),
-  loader: async ({ deps: { query, category, isBookmarked }}) => {
-    let searchResult: MediaItem[] = [];
-    const data = await getData();
+  loader: async () => {
+    // let searchResult: MediaItem[] = [];
+    // const data = await getData();
 
-    if (data && data.length > 0) {
-      searchResult = data;
-    }
-    else {
-      throw Error();
-    }
+    // if (data && data.length > 0) {
+    //   searchResult = data;
+    // }
+    // else {
+    //   throw Error();
+    // }
 
-    if (query) {
-      searchResult = data.filter((item: MediaItem) => item.title.toLowerCase().includes(query.toLowerCase()));
-    }
+    // if (query) {
+    //   searchResult = data.filter((item: MediaItem) => item.title.toLowerCase().includes(query.toLowerCase()));
+    // }
 
-    if (category) {
-      searchResult = searchResult.filter((item: MediaItem) => item.category === category);
-    }
+    // if (category) {
+    //   searchResult = searchResult.filter((item: MediaItem) => item.category === category);
+    // }
 
-    if (isBookmarked) {
-      searchResult = searchResult.filter((item: MediaItem) => item.isBookmarked);
-    }
+    // if (isBookmarked) {
+    //   searchResult = searchResult.filter((item: MediaItem) => item.isBookmarked);
+    // }
 
-    return { searchResult };
+    // return { searchResult };
   },
   pendingComponent: () => {
     return (
@@ -58,49 +58,50 @@ export const Route = createFileRoute('/search')({
 });
 
 function RouteComponent() {
-  const { query } = useSearch({ from: '/search' });
-  const { searchResult } = useLoaderData({ from: '/search' });
+  // const { query } = useSearch({ from: '/search' });
+  // const { searchResult } = useLoaderData({ from: '/search' });
 
   return (
-    <section className='search-wrapper'>
-      {
-        !query && (
-          <h2>Waiting for search...</h2>
-        )
-      }
-      {
-        query && (
-          searchResult.length == 0 && <h2>No results found for '{ query }'</h2>
-        )
-      }
-      {
-        query && (
-          searchResult.length > 0 && (
-            searchResult.length == 1
-            ? <h2>{ searchResult.length } result found for '{ query }'</h2>
-            : <h2>Found { searchResult.length } results for '{ query }'</h2>
-          )
-        )
-      }
-      <section className="search-results">
-        {
-          searchResult?.map((item: MediaItem, index: number) => {
-            return (
-              <Media
-                key={ index }
-                type='secondary'
-                title={ item.title }
-                year={ item.year }
-                category={ item.category }
-                rating={ item.rating }
-                thumbnail={ item.thumbnail }
-                isBookmarked={ item.isBookmarked }
-                isTrending={ item.isTrending }
-              />
-            );
-          })
-        }
-      </section>
-    </section>
+    <></>
+    // <section className='search-wrapper'>
+    //   {
+    //     !query && (
+    //       <h2>Waiting for search...</h2>
+    //     )
+    //   }
+    //   {
+    //     query && (
+    //       searchResult.length == 0 && <h2>No results found for '{ query }'</h2>
+    //     )
+    //   }
+    //   {
+    //     query && (
+    //       searchResult.length > 0 && (
+    //         searchResult.length == 1
+    //         ? <h2>{ searchResult.length } result found for '{ query }'</h2>
+    //         : <h2>Found { searchResult.length } results for '{ query }'</h2>
+    //       )
+    //     )
+    //   }
+    //   <section className="search-results">
+    //     {
+    //       searchResult?.map((item: MediaItem, index: number) => {
+    //         return (
+    //           <Media
+    //             key={ index }
+    //             type='secondary'
+    //             title={ item.title }
+    //             year={ item.year }
+    //             category={ item.category }
+    //             rating={ item.rating }
+    //             thumbnail={ item.thumbnail }
+    //             isBookmarked={ item.isBookmarked }
+    //             isTrending={ item.isTrending }
+    //           />
+    //         );
+    //       })
+    //     }
+    //   </section>
+    // </section>
   );
 };
