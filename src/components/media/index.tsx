@@ -1,1 +1,1 @@
-export { Media } from './Media';
+export { Media, Card } from './Media';

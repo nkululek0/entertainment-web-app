@@ -3,24 +3,41 @@ import type { RefObject } from 'react';
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { useDraggable } from 'react-use-draggable-scroll';
 
-import type { MediaItem } from '@/api/types';
-import { getData } from '@/api/api';
+import type { Show } from '@/api/types';
+import API from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
-import { Media } from '@/components/media';
+import { Card } from '@/components/media';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
   loader: async () => {
-    const result: { trendingMedia: MediaItem[], recommended: MediaItem[] } = {
+    const result: { trendingMedia: Show[], recommended: Show[] } = {
       trendingMedia: [],
       recommended: []
     };
-    const data = await getData();
 
-    if (data && data.length > 0) {
-      result.trendingMedia = data.filter((item: MediaItem) => item.isTrending);
-      result.recommended = data.filter((item: MediaItem) => !item.isTrending);
+    const [
+      trendingMovies,
+      trendingTvSeries,
+      topRatedMovies,
+      topRatedSeries
+    ] = await Promise.all([
+      API.getTrending('movie'),
+      API.getTrending('tv'),
+      API.getTopRated('movie'),
+      API.getTopRated('tv')
+    ]);
+
+    if (trendingMovies && trendingTvSeries && topRatedMovies && topRatedSeries) {
+      const trending = [...trendingMovies.results.slice(0, 5), ...trendingTvSeries.results.slice(0, 5)];
+      trending.sort((a: Show, b: Show) => b.popularity - a.popularity);
+
+      const recommended = [...topRatedMovies.results, ...topRatedSeries.results];
+      recommended.sort((a: Show, b: Show) => b.popularity - a.popularity);
+
+      result.trendingMedia = trending;
+      result.recommended = recommended;
     }
     else {
       throw Error();
@@ -60,18 +77,18 @@ function RouteComponent() {
         >
           <section className='trending'>
             {
-              trendingMedia?.map((item: MediaItem, index: number) => {
+              trendingMedia?.map((item: Show, index: number) => {
                 return (
-                  <Media
+                  <Card
                     key={ index }
                     type='primary'
+                    media_type={ item.media_type }
                     title={ item.title }
-                    year={ item.year }
-                    category={ item.category }
-                    rating={ item.rating }
-                    isBookmarked={ item.isBookmarked }
-                    isTrending={ item.isTrending }
-                    thumbnail={ item.thumbnail }
+                    name={ item.name }
+                    release_date={ item.release_date }
+                    first_air_date={ item.first_air_date }
+                    poster_path={ item.poster_path }
+                    vote_average={ item.vote_average }
                   />
                 );
               })
@@ -83,18 +100,17 @@ function RouteComponent() {
         <h2>Recommended for you</h2>
         <section className='recommended'>
           {
-            recommended?.map((item: MediaItem, index: number) => {
+            recommended?.map((item: Show, index: number) => {
               return (
-                <Media
+                <Card
                   key={ index }
                   type='secondary'
                   title={ item.title }
-                  year={ item.year }
-                  category={ item.category }
-                  rating={ item.rating }
-                  isBookmarked={ item.isBookmarked }
-                  isTrending={ item.isTrending }
-                  thumbnail={ item.thumbnail }
+                  name={ item.name }
+                  release_date={ item.release_date }
+                  first_air_date={ item.first_air_date }
+                  poster_path={ item.poster_path }
+                  vote_average={ item.vote_average }
                 />
               );
             })

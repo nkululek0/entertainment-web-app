@@ -1,25 +1,25 @@
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 
-import type { MediaItem } from '@/api/types';
-import { getData } from '@/api/api';
+import type { Show } from '@/api/types';
+import API from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
-import { Media } from '@/components/media';
+import { Card } from '@/components/media';
 
 export const Route = createFileRoute('/tv-series')({
   component: RouteComponent,
   loader: async () => {
-    let tvSeries: MediaItem[] = [];
-    const data = await getData();
+    const result: { tvSeries: Show[] } = { tvSeries: [] };
+    const data = await API.getPopular('tv');
 
-    if (data && data.length > 0) {
-      tvSeries = data.filter((item: MediaItem) => item.category === 'TV Series');
+    if (data && data.results.length > 0) {
+      result.tvSeries = data.results;
     }
     else {
       throw Error();
     }
 
-    return { tvSeries };
+    return result;
   },
   pendingComponent: () => {
     return (
@@ -47,16 +47,15 @@ function RouteComponent() {
         {
           tvSeries?.map((item, index) => {
             return (
-              <Media
+              <Card
                 key={ index }
                 type='secondary'
                 title={ item.title }
-                year={ item.year }
-                category={ item.category }
-                rating={ item.rating }
-                isBookmarked={ item.isBookmarked }
-                isTrending={ item.isTrending }
-                thumbnail={ item.thumbnail }
+                name={ item.name }
+                release_date={ item.release_date }
+                first_air_date={ item.first_air_date }
+                poster_path={ item.poster_path }
+                vote_average={ item.vote_average }
               />
             );
           })

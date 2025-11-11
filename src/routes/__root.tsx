@@ -131,7 +131,7 @@ function RootLayout() {
             </Link>
           </li>
           <li>
-            <Link to='/bookmark'>
+            {/* <Link to='/bookmark'>
               {
                 () => {
                   return (
@@ -144,7 +144,7 @@ function RootLayout() {
                   );
                 }
               }
-            </Link>
+            </Link> */}
           </li>
         </ol>
         <div className='profile-image-container'>
