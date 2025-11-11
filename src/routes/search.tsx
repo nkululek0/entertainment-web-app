@@ -1,10 +1,10 @@
-import { createFileRoute, useSearch, useLoaderData } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 // import { getData } from '@/api/api';
 // import type { MediaItem } from '@/api/types';
 
 import { LoadSpinner } from '@/components/load-spinner';
-import { Media } from '@/components/media';
+// import { Media } from '@/components/media';
 
 export const Route = createFileRoute('/search')({
   component: RouteComponent,

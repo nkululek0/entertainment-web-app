@@ -1,10 +1,10 @@
-import type { MediaItem } from '@/api/types';
+// import type { MediaItem } from '@/api/types';
 
 import style from './Media.module.css';
 
-type MediaProps = MediaItem & {
-  type: 'primary' | 'secondary'
-};
+// type MediaProps = MediaItem & {
+//   type: 'primary' | 'secondary'
+// };
 
 const icons = {
   movie: (<svg viewBox='0 0 20 20' width='10' height='10' xmlns='http://www.w3.org/2000/svg'>
@@ -51,59 +51,59 @@ const icons = {
   }
 };
 
-export function Media(props: MediaProps) {
-  const { type, title, year, category, rating, isBookmarked, thumbnail } = props;
-  const screenWidth = window.innerWidth;
+// export function Media(props: MediaProps) {
+//   const { type, title, year, category, rating, isBookmarked, thumbnail } = props;
+//   const screenWidth = window.innerWidth;
 
-  return (
-    <>
-      {  type == 'primary' &&
-        <article
-          style={{
-            backgroundImage: screenWidth >= 768 ? `url(${ thumbnail.trending?.large })` :  `url(${ thumbnail.trending?.small })`,
-            backgroundSize: 'cover'
-          }}
-          className={ style[type] }
-        >
-          <h4>{ title }</h4>
-          <div className={ style['info-and-bookmark-container'] }>
-            <section className={ style['info'] }>
-              <p>{ year }</p>
-              <p className={ style['category'] }>
-                <span>{ category === 'Movie' ? icons.movie : icons.tv }</span>
-                <span>{ category }</span>
-              </p>
-              <p>{ icons.star }</p>
-            </section>
-            { isBookmarked ? icons.bookmark.filled : icons.bookmark.empty }
-          </div>
-        </article>
-      }
-      {
-        type == 'secondary' &&
-        <article className={ style[type] }>
-          <h4>{ title }</h4>
-          <section className={ style['info-secondary'] }>
-            <p>{ year }</p>
-            <p className={ style['category-secondary'] }>
-              <span>{ category === 'Movie' ? icons.movie : icons.tv }</span>
-              <span>{ category }</span>
-            </p>
-            <p>{ rating }</p>
-          </section>
-          <div
-            className={ style['background'] }
-            style={{
-              backgroundImage: screenWidth >= 768 ? `url(${ thumbnail.regular.large })` : `url(${ thumbnail.regular.small })`,
-              backgroundSize: 'cover' }}
-          >
-            { isBookmarked ? icons.bookmark.filled : icons.bookmark.empty }
-          </div>
-        </article>
-      }
-    </>
-  );
-};
+//   return (
+//     <>
+//       {  type == 'primary' &&
+//         <article
+//           style={{
+//             backgroundImage: screenWidth >= 768 ? `url(${ thumbnail.trending?.large })` :  `url(${ thumbnail.trending?.small })`,
+//             backgroundSize: 'cover'
+//           }}
+//           className={ style[type] }
+//         >
+//           <h4>{ title }</h4>
+//           <div className={ style['info-and-bookmark-container'] }>
+//             <section className={ style['info'] }>
+//               <p>{ year }</p>
+//               <p className={ style['category'] }>
+//                 <span>{ category === 'Movie' ? icons.movie : icons.tv }</span>
+//                 <span>{ category }</span>
+//               </p>
+//               <p>{ icons.star }</p>
+//             </section>
+//             { isBookmarked ? icons.bookmark.filled : icons.bookmark.empty }
+//           </div>
+//         </article>
+//       }
+//       {
+//         type == 'secondary' &&
+//         <article className={ style[type] }>
+//           <h4>{ title }</h4>
+//           <section className={ style['info-secondary'] }>
+//             <p>{ year }</p>
+//             <p className={ style['category-secondary'] }>
+//               <span>{ category === 'Movie' ? icons.movie : icons.tv }</span>
+//               <span>{ category }</span>
+//             </p>
+//             <p>{ rating }</p>
+//           </section>
+//           <div
+//             className={ style['background'] }
+//             style={{
+//               backgroundImage: screenWidth >= 768 ? `url(${ thumbnail.regular.large })` : `url(${ thumbnail.regular.small })`,
+//               backgroundSize: 'cover' }}
+//           >
+//             { isBookmarked ? icons.bookmark.filled : icons.bookmark.empty }
+//           </div>
+//         </article>
+//       }
+//     </>
+//   );
+// };
 
 type CardProps = {
   type: 'primary' | 'secondary'
