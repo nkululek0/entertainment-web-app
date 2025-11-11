@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const ShowSchema = z.object({
   adult: z.boolean(),
-  backdrop_path: z.string(),
+  backdrop_path: z.union([z.string(), z.null()]),
   first_air_date: z.string().optional(), //(yyy-mm-dd) ~ tv series
   genre_ids: z.array(z.number()),
   id: z.number(),
@@ -22,13 +22,12 @@ export const ShowSchema = z.object({
   vote_count: z.number(),
 });
 
-export type Show = z.infer<typeof ShowSchema>;
-
 export const ShowResponseSchema = z.object({
   page: z.number(),
-  results: ShowSchema.array(),
+  results: z.array(ShowSchema),
   total_pages: z.number(),
   total_results: z.number(),
 });
 
+export type Show = z.infer<typeof ShowSchema>;
 export type ShowResponse = z.infer<typeof ShowResponseSchema>;

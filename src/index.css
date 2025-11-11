@@ -115,8 +115,9 @@ body {
 
   .recommended {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
+    row-gap: 30px;
     margin: 0px 15px;
   }
 }
@@ -128,8 +129,9 @@ body {
 
   .movies {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
+    row-gap: 30px;
     margin: 0px 15px;
   }
 }
@@ -141,8 +143,9 @@ body {
 
   .tv-series {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
+    row-gap: 30px;
     margin: 0px 15px;
   }
 }
@@ -161,8 +164,9 @@ body {
 
   .bookmarks {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
+    row-gap: 30px;
     margin: 0px 15px;
   }
 }
@@ -175,9 +179,21 @@ body {
 
   .search-results {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
+    row-gap: 30px;
     margin: 0px 15px;
+  }
+}
+
+@media screen and (min-width: 375px) {
+
+  .recommended-wrapper .recommended,
+  .movies-wrapper .movies,
+  .tv-series-wrapper .tv-series,
+  .bookmarks-wrapper .bookmarks,
+  .search-wrapper .search-results {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -289,7 +305,6 @@ body {
 
   .page-wrapper {
     width: 90%;
-    padding-top: 20px;
     padding-bottom: 30px;
 
     > a {
