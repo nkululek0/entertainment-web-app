@@ -7,6 +7,13 @@
   flex-direction: column-reverse;
   gap: 5px;
   padding: 10px;
+
+  h4 {
+    background: rgba(0, 0, 0, 0.5);
+    width: fit-content;
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
 }
 
 .info-and-bookmark-container {
@@ -21,6 +28,10 @@
   gap: 10px;
   font-size: 13px;
   font-weight: 100;
+  background: rgba(0, 0, 0, 0.5);
+  width: fit-content;
+  padding: 2px 6px;
+  border-radius: 8px;
 
   p {
     display: flex;
