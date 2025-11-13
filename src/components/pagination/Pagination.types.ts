@@ -1,0 +1,1 @@
+export type PageNavigationSymbols = number | '&laquo;' | '&lsaquo;' | '&rsaquo;' | '&raquo;';

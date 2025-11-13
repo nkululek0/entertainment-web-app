@@ -1,0 +1,25 @@
+.pagination-container {
+  align-self: center;
+}
+
+.pagination {
+  display: flex;
+  list-style-type: none;
+  gap: 0.2rem;
+}
+
+.page-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  border: 1px solid #fff;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.page-item:nth-child(1) {
+  border-radius: 8px 0px 0px 8px;
+}
+.page-item:nth-last-child(1) {
+  border-radius: 0px 8px 8px 0px;
+}

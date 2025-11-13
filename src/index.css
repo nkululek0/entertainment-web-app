@@ -285,6 +285,8 @@ body {
   }
 
   #page-navigator-wrapper {
+    position: fixed;
+    height: 90dvh;
     flex-direction: column;
     justify-content: flex-start;
     gap: 80px;
@@ -305,6 +307,7 @@ body {
 
   .page-wrapper {
     width: 90%;
+    margin-left: 10%;
     padding-bottom: 30px;
 
     > a {

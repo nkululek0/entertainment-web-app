@@ -1,6 +1,6 @@
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import type { RefObject } from 'react';
-import { createFileRoute, useLoaderData } from '@tanstack/react-router';
+import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router';
 import { useDraggable } from 'react-use-draggable-scroll';
 
 import type { Show } from '@/api/types';
@@ -9,12 +9,28 @@ import API from '@/api/api';
 import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/card';
 
+import type { PageNavigationSymbols } from '@/components/pagination/Pagination.types';
+import { Pagination } from '@/components/pagination';
+
 export const Route = createFileRoute('/')({
   component: RouteComponent,
-  loader: async () => {
-    const result: { trendingMedia: Show[], recommended: Show[] } = {
+  validateSearch: (search: { page: number }) => {
+    return {
+      page: Number(search.page)
+    }
+  },
+  loaderDeps: ({ search: { page }}) => ({ page }),
+  loader: async ({ deps: { page }}) => {
+    const result: {
+      trendingMedia: Show[],
+      recommended: Show[],
+      page: number,
+      totalPages: number
+    } = {
       trendingMedia: [],
-      recommended: []
+      recommended: [],
+      page: page,
+      totalPages: 1
     };
 
     const [
@@ -25,8 +41,8 @@ export const Route = createFileRoute('/')({
     ] = await Promise.all([
       API.getTrending('movie'),
       API.getTrending('tv'),
-      API.getTopRated('movie'),
-      API.getTopRated('tv')
+      API.getTopRated('movie', page),
+      API.getTopRated('tv', page)
     ]);
 
     if (trendingMovies && trendingTvSeries && topRatedMovies && topRatedSeries) {
@@ -38,6 +54,7 @@ export const Route = createFileRoute('/')({
 
       result.trendingMedia = trending;
       result.recommended = recommended;
+      result.totalPages = topRatedMovies.total_pages;
     }
     else {
       throw Error();
@@ -64,7 +81,37 @@ export const Route = createFileRoute('/')({
 function RouteComponent() {
   const draggableRef = useRef<HTMLDivElement>(null) as RefObject<HTMLInputElement>;
   const { events } = useDraggable(draggableRef, { applyRubberBandEffect: true });
-  const { trendingMedia, recommended } = useLoaderData({ from: '/' });
+  const { trendingMedia, recommended, page, totalPages } = useLoaderData({ from: '/' });
+  // const [pageNumber, setPageNumber] = useState(1);
+  const navigate = useNavigate({ from: '/' });
+
+
+  const handlePageChange = (pageSymbol: PageNavigationSymbols) => {
+    if (pageSymbol == '&laquo;') {
+      // setPageNumber(1);
+      navigate({ search: { page: 1 } });
+    }
+    else if (pageSymbol == '&lsaquo;') {
+      if (page != 1) {
+        // setPageNumber(page - 1);
+        navigate({ search: { page: page - 1 } });
+      }
+    }
+    else if (pageSymbol == '&rsaquo;') {
+      if (page != totalPages) {
+        // setPageNumber(page + 1);
+        navigate({ search: { page: page + 1 } });
+      }
+    }
+    else if (pageSymbol == '&raquo;') {
+      // setPageNumber(page);
+      navigate({ search: { page: totalPages } });
+    }
+    else {
+      // setPageNumber(pageSymbol);
+      navigate({ search: { page: pageSymbol } });
+    }
+  };
 
   return (
     <section className='home-content'>
@@ -117,6 +164,13 @@ function RouteComponent() {
           }
         </section>
       </section>
+      <Pagination
+        totalPages={ totalPages }
+        page={ page }
+        siblings={ 1 }
+        limit={ 5 }
+        onPageChange={ handlePageChange }
+      />
     </section>
   );
 };

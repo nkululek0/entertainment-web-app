@@ -83,7 +83,12 @@ function RootLayout() {
         </svg>
         <ol>
           <li>
-            <Link to='/'>
+            <Link
+              to='/'
+              search={{
+                page: 1
+              }}
+            >
               {
                 () => {
                   return (
