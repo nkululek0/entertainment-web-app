@@ -4,30 +4,24 @@ import type { PageNavigationSymbols } from './Pagination.types';
 import style from './Pagination.module.css';
 
 const paginationRange = (totalPages: number, page: number, siblings: number): PageNavigationSymbols[] => {
-  if (siblings > totalPages) return _.range(1, totalPages + 1);
+  if (page == 1) {
+    const rightItemsCount = 3 * siblings + 1;
+    const range = _.range(1, Math.min(rightItemsCount, totalPages + 1));
+
+    return [...range];
+  }
+
+  if (page == totalPages) {
+    const leftItemsCount = 3 * siblings;
+    const range = _.range(leftItemsCount, totalPages + 1);
+
+    return [...range];
+  }
 
   const leftSiblingsIndex = Math.max(page - siblings, 1);
   const rightSiblingsIndex = Math.min(page + siblings, totalPages);
-  const showLeftDots = leftSiblingsIndex > 2;
-  const showRightDots = rightSiblingsIndex < totalPages - 2;
 
-  if(!showLeftDots && showRightDots) {
-    let leftItemsCount = 3 * siblings;
-    let leftRange = _.range(1, leftItemsCount + 1);
-
-    return [...leftRange];
-  }
-  else if (showLeftDots && !showRightDots) {
-    let rightItemsCount = 3 * siblings;
-    let rightRange = _.range(totalPages - rightItemsCount + 1, totalPages + 1);
-
-    return [1, ...rightRange];
-  }
-  else {
-    let middleRange = _.range(leftSiblingsIndex, rightSiblingsIndex + 1);
-
-    return [1, ...middleRange];
-  }
+  return _.range(leftSiblingsIndex, rightSiblingsIndex + 1);
 };
 
 export type PaginationProps = {

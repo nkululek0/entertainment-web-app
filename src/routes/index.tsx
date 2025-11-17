@@ -10,7 +10,7 @@ import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/card';
 
 import type { PageNavigationSymbols } from '@/components/pagination/Pagination.types';
-import { Pagination } from '@/components/pagination';
+import { Pagination, handlePageChange } from '@/components/pagination';
 
 const sortContent = (a: Show, b: Show) => b.popularity - a.popularity;
 
@@ -65,6 +65,7 @@ export const Route = createFileRoute('/')({
   }
 });
 
+
 function RouteComponent() {
   const draggableRef = useRef<HTMLDivElement>(null) as RefObject<HTMLInputElement>;
   const { events } = useDraggable(draggableRef, { applyRubberBandEffect: true });
@@ -72,27 +73,8 @@ function RouteComponent() {
   const totalPages = 5;
   const navigate = useNavigate({ from: '/' });
 
-
-  const handlePageChange = (pageSymbol: PageNavigationSymbols) => {
-    if (pageSymbol == '&laquo;') {
-      navigate({ search: { page: 1 } });
-    }
-    else if (pageSymbol == '&lsaquo;') {
-      if (page != 1) {
-        navigate({ search: { page: page - 1 } });
-      }
-    }
-    else if (pageSymbol == '&rsaquo;') {
-      if (page != totalPages) {
-        navigate({ search: { page: page + 1 } });
-      }
-    }
-    else if (pageSymbol == '&raquo;') {
-      navigate({ search: { page: totalPages } });
-    }
-    else {
-      navigate({ search: { page: pageSymbol } });
-    }
+  const navigateTo = (pageSymbol: PageNavigationSymbols) => {
+    handlePageChange(navigate, pageSymbol, page, totalPages);
   };
 
   return (
@@ -150,7 +132,7 @@ function RouteComponent() {
         totalPages={ totalPages }
         page={ page }
         siblings={ 1 }
-        onPageChange={ handlePageChange }
+        onPageChange={ navigateTo }
       />
     </section>
   );
