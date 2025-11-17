@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import type { RefObject } from 'react';
 import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router';
 import { useDraggable } from 'react-use-draggable-scroll';
@@ -12,27 +12,17 @@ import { Card } from '@/components/card';
 import type { PageNavigationSymbols } from '@/components/pagination/Pagination.types';
 import { Pagination } from '@/components/pagination';
 
+const sortContent = (a: Show, b: Show) => b.popularity - a.popularity;
+
 export const Route = createFileRoute('/')({
   component: RouteComponent,
   validateSearch: (search: { page: number }) => {
     return {
-      page: Number(search.page)
+      page: Number(search.page ?? 1)
     }
   },
   loaderDeps: ({ search: { page }}) => ({ page }),
   loader: async ({ deps: { page }}) => {
-    const result: {
-      trendingMedia: Show[],
-      recommended: Show[],
-      page: number,
-      totalPages: number
-    } = {
-      trendingMedia: [],
-      recommended: [],
-      page: page,
-      totalPages: 1
-    };
-
     const [
       trendingMovies,
       trendingTvSeries,
@@ -45,22 +35,19 @@ export const Route = createFileRoute('/')({
       API.getTopRated('tv', page)
     ]);
 
-    if (trendingMovies && trendingTvSeries && topRatedMovies && topRatedSeries) {
-      const trending = [...trendingMovies.results.slice(0, 5), ...trendingTvSeries.results.slice(0, 5)];
-      trending.sort((a: Show, b: Show) => b.popularity - a.popularity);
+    if (!trendingMovies && !trendingTvSeries && !topRatedMovies && !topRatedSeries) throw Error();
 
-      const recommended = [...topRatedMovies.results, ...topRatedSeries.results];
-      recommended.sort((a: Show, b: Show) => b.popularity - a.popularity);
+    const trending = [...trendingMovies.results.slice(0, 5), ...trendingTvSeries.results.slice(0, 5)];
+    trending.sort(sortContent);
 
-      result.trendingMedia = trending;
-      result.recommended = recommended;
-      result.totalPages = topRatedMovies.total_pages;
-    }
-    else {
-      throw Error();
-    }
+    const recommended = [...topRatedMovies.results, ...topRatedSeries.results];
+    recommended.sort(sortContent);
 
-    return result;
+    return {
+      trendingMedia: trending,
+      recommended: recommended,
+      page: page
+    };
   },
   pendingComponent: () => {
     return (
@@ -81,34 +68,29 @@ export const Route = createFileRoute('/')({
 function RouteComponent() {
   const draggableRef = useRef<HTMLDivElement>(null) as RefObject<HTMLInputElement>;
   const { events } = useDraggable(draggableRef, { applyRubberBandEffect: true });
-  const { trendingMedia, recommended, page, totalPages } = useLoaderData({ from: '/' });
-  // const [pageNumber, setPageNumber] = useState(1);
+  const { trendingMedia, recommended, page } = useLoaderData({ from: '/' });
+  const totalPages = 5;
   const navigate = useNavigate({ from: '/' });
 
 
   const handlePageChange = (pageSymbol: PageNavigationSymbols) => {
     if (pageSymbol == '&laquo;') {
-      // setPageNumber(1);
       navigate({ search: { page: 1 } });
     }
     else if (pageSymbol == '&lsaquo;') {
       if (page != 1) {
-        // setPageNumber(page - 1);
         navigate({ search: { page: page - 1 } });
       }
     }
     else if (pageSymbol == '&rsaquo;') {
       if (page != totalPages) {
-        // setPageNumber(page + 1);
         navigate({ search: { page: page + 1 } });
       }
     }
     else if (pageSymbol == '&raquo;') {
-      // setPageNumber(page);
       navigate({ search: { page: totalPages } });
     }
     else {
-      // setPageNumber(pageSymbol);
       navigate({ search: { page: pageSymbol } });
     }
   };
@@ -168,7 +150,6 @@ function RouteComponent() {
         totalPages={ totalPages }
         page={ page }
         siblings={ 1 }
-        limit={ 5 }
         onPageChange={ handlePageChange }
       />
     </section>
