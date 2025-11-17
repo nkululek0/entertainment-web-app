@@ -147,6 +147,7 @@ body {
     gap: 15px;
     row-gap: 30px;
     margin: 0px 15px;
+    margin-bottom: 30px !important;
   }
 }
 

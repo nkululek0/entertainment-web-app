@@ -1,25 +1,30 @@
-import { createFileRoute, useLoaderData } from '@tanstack/react-router';
+import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router';
 
-import type { Show } from '@/api/types';
 import API from '@/api/api';
 
 import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/card';
 
+import type { PageNavigationSymbols } from '@/components/pagination/Pagination.types';
+import { Pagination, handlePageChange } from '@/components/pagination';
+
 export const Route = createFileRoute('/tv-series')({
   component: RouteComponent,
-  loader: async () => {
-    const result: { tvSeries: Show[] } = { tvSeries: [] };
-    const data = await API.getPopular('tv');
-
-    if (data && data.results.length > 0) {
-      result.tvSeries = data.results;
+  validateSearch: (search: { page: number }) => {
+    return {
+      page: Math.min(search.page ?? 1, 500)
     }
-    else {
-      throw Error();
-    }
+  },
+  loaderDeps: ({ search: { page }}) => ({ page }),
+  loader: async ({ deps: { page }}) => {
+    const data = await API.getPopular('tv', page);
 
-    return result;
+    if (!data) throw Error();
+
+    return {
+      tvSeries: data.results,
+      page: page
+    };
   },
   pendingComponent: () => {
     return (
@@ -38,7 +43,13 @@ export const Route = createFileRoute('/tv-series')({
 })
 
 function RouteComponent() {
-  const { tvSeries } = useLoaderData({ from: '/tv-series' });
+  const { tvSeries, page } = useLoaderData({ from: '/tv-series' });
+  const totalPages = 500;
+  const navigate = useNavigate({ from: '/tv-series' });
+
+  const navigateTo = (pageSymbol: PageNavigationSymbols) => {
+    handlePageChange(navigate, pageSymbol, page, totalPages);
+  };
 
   return (
     <section className='tv-series-wrapper'>
@@ -61,6 +72,12 @@ function RouteComponent() {
           })
         }
       </section>
+      <Pagination
+        totalPages={ totalPages }
+        page={ page }
+        siblings={ 1 }
+        onPageChange={ navigateTo }
+      />
     </section>
   );
 }

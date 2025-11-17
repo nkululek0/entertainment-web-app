@@ -125,7 +125,12 @@ function RootLayout() {
             </Link>
           </li>
           <li>
-            <Link to='/tv-series'>
+            <Link
+              to='/tv-series'
+              search={{
+                page: 1
+              }}
+            >
               {
                 () => {
                   return (
