@@ -104,7 +104,12 @@ function RootLayout() {
             </Link>
           </li>
           <li>
-            <Link to='/movies'>
+            <Link
+              to='/movies'
+              search={{
+                page: 1
+              }}
+            >
               {
                 () => {
                   return (
