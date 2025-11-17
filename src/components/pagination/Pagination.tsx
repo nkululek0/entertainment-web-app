@@ -12,8 +12,8 @@ const paginationRange = (totalPages: number, page: number, siblings: number): Pa
   }
 
   if (page == totalPages) {
-    const leftItemsCount = 3 * siblings;
-    const range = _.range(leftItemsCount, totalPages + 1);
+    const leftItemsCount = 2 * siblings;
+    const range = _.range(totalPages - leftItemsCount, totalPages + 1);
 
     return [...range];
   }
