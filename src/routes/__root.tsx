@@ -45,7 +45,7 @@ function RootLayout() {
   const location = useRouterState({ select: (s) => s.location });
   const previousLocation = useRef<string>('');
 
-  if (Object.values(location.search).length > 0) {
+  if (Object.values(location.search).length > 0 && location.search.query) {
     const search = location.search;
 
     if (search.category) {
