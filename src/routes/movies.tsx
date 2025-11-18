@@ -12,7 +12,7 @@ export const Route = createFileRoute('/movies')({
   component: RouteComponent,
   validateSearch: (search: { page: number }) => {
     return {
-      page: Math.min(Math.max(search.page ?? 1, 1), 500)
+      page: Math.min(search.page ?? 1, 500)
     }
   },
   loaderDeps: ({ search: { page }}) => ({ page }),
