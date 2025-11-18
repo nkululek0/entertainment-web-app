@@ -53,7 +53,4 @@ export const ShowDetailsSchema = z.object({
   vote_average: z.number()
 });
 
-export const ShowDetailsResponseSchema = ShowDetailsSchema;
-
-export type ShowDetailsResponse = z.infer<typeof ShowDetailsResponseSchema>;
 export type ShowDetails = z.infer<typeof ShowDetailsSchema>;
