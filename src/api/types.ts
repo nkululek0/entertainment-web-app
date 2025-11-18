@@ -31,3 +31,29 @@ export const ShowResponseSchema = z.object({
 
 export type Show = z.infer<typeof ShowSchema>;
 export type ShowResponse = z.infer<typeof ShowResponseSchema>;
+
+export const ShowDetailsSchema = z.object({
+  backdrop_path: z.string(),
+  genres: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+  })),
+  id: z.number(),
+  imdb_id: z.string(),
+  original_language: z.string(),
+  overview: z.string(),
+  poster_path: z.string(),
+  release_date: z.string().optional(), // (yyyy-mm-dd) ~ movie
+  first_air_date: z.string().optional(), // (yyy-mm-dd) ~ tv series
+  status: z.string(),
+  tagline: z.string(),
+  title: z.string(), // ~ movie
+  name: z.string().optional(), // ~ tv series
+  video: z.boolean(),
+  vote_average: z.number()
+});
+
+export const ShowDetailsResponseSchema = ShowDetailsSchema;
+
+export type ShowDetailsResponse = z.infer<typeof ShowDetailsResponseSchema>;
+export type ShowDetails = z.infer<typeof ShowDetailsSchema>;
