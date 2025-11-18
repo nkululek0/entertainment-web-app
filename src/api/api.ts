@@ -11,8 +11,8 @@ const getUrl = (path: string, page?: number, query?: string) => {
   url.searchParams.set('api_key', API_KEY);
   url.searchParams.set('language', 'en-US');
 
-  if (page) url.searchParams.set('page', page.toString());
   if (query) url.searchParams.set('query', query);
+  if (page) url.searchParams.set('page', page.toString());
 
   return url;
 };
@@ -59,7 +59,7 @@ const API = {
     return data as ShowResponse;
   },
   getSearch: async (type: ShowType, query: string, page: number = 1) => {
-    const url = getUrl(`${ type }/search`, page, query);
+    const url = getUrl(`search/${ type }`, page, query);
     const data = await processResponse(url.href);
 
     return data as ShowResponse;
