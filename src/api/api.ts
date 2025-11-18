@@ -1,4 +1,4 @@
-import { ShowSchema, type Show, ShowResponseSchema, type ShowResponse } from './types';
+import { type Show, type ShowResponse, type ShowDetails, ShowResponseSchema, ShowSchema, ShowDetailsSchema } from './types';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -29,6 +29,16 @@ const processResponse = async (url: string) => {
   }
 };
 
+const processShowDetailsResponse = async (url: string) => {
+  const response = await fetch(url);
+  const responseData = await response.json();
+  const validData = ShowDetailsSchema.safeParse(responseData);
+
+  if (validData.success) {
+    return validData.data;
+  }
+}
+
 const API = {
   getTrending: async (type: ShowType) => {
     const url = getUrl(`trending/${ type }/day`);
@@ -54,6 +64,12 @@ const API = {
 
     return data as ShowResponse;
   },
+  getShowDetails: async (type: ShowType, id: number) => {
+    const url = getUrl(`${ type }/${ id }`);
+    const data = await processShowDetailsResponse(url.href);
+
+    return data as ShowDetails;
+  }
 };
 
 export default API;
