@@ -39,7 +39,7 @@ export const ShowDetailsSchema = z.object({
     name: z.string(),
   })),
   id: z.number(),
-  imdb_id: z.string(),
+  imdb_id: z.string().optional(),
   original_language: z.string(),
   overview: z.string(),
   poster_path: z.string(),
@@ -47,9 +47,9 @@ export const ShowDetailsSchema = z.object({
   first_air_date: z.string().optional(), // (yyy-mm-dd) ~ tv series
   status: z.string(),
   tagline: z.string(),
-  title: z.string(), // ~ movie
+  title: z.string().optional(), // ~ movie
   name: z.string().optional(), // ~ tv series
-  video: z.boolean(),
+  video: z.boolean().optional(), // ~ movie
   vote_average: z.number()
 });
 
