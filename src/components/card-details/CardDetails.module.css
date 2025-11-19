@@ -1,0 +1,51 @@
+.poster-container {
+  position: relative;
+  display: inline-block;
+  height: 200px;
+
+  img {
+    height: 150px;
+    width: 100px;
+    position: absolute;
+    top: 25px;
+    left: 15px;
+    border-radius: 8px;
+  }
+}
+
+.backdrop-container {
+  display: inline-block;
+
+  img {
+    width: 100dvw;
+    height: 200px;
+    object-fit: cover;
+    object-position: left;
+  }
+}
+
+
+.rating-container {
+  position: relative;
+  width: 100dvw;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+
+  span {
+    position: absolute;
+    display: inline-block;
+    width: auto;
+    padding: 10px 7px;
+    bottom: 15px;
+    right: 15px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background-color: var(--blue-950);
+  }
+}
+
+.card-title {
+  text-align: center;
+  margin-top: 10px !important;
+}
