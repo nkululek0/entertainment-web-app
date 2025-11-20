@@ -16,7 +16,7 @@ type CardDetailsProps = {
 };
 
 export function CardDetails(props: CardDetailsProps) {
-  const { backdropPath, genres, overview, posterPath, releaseDate, firstAirDate, status, tagline, title, name, video, voteAverage } = props;
+  const { backdropPath, genres, overview, posterPath, releaseDate, firstAirDate, tagline, title, name, voteAverage } = props;
   const cardTitle = title ?? name;
   const imageBaseURL = 'https://image.tmdb.org/t/p/original';
 
@@ -35,10 +35,20 @@ export function CardDetails(props: CardDetailsProps) {
           <div className={ style['rating-container'] }>
             <span>{ Number(voteAverage.toFixed(1)) * 10 }%</span>
           </div>
-          <h2 className={ style['card-title'] }>{ cardTitle }</h2>
+          <h2 className={ style['card-title'] }>{ cardTitle } ({ releaseDate?.split('-')[0] ?? firstAirDate?.split('-')[0] })</h2>
         </div>
       </section>
-      <section className='overview-wrapper'></section>
+      <section className={ style['overview-wrapper'] }>
+        <p className={ style['tagline'] }>{ tagline }</p>
+        <div className={ style['overview'] }>
+          <h3>Overview</h3>
+          <p>{ overview }</p>
+        </div>
+        <div className={ style['genre'] }>
+          <h3>Genres</h3>
+          <p>{ genres.map(genre => genre.name).join(', ') }</p>
+        </div>
+      </section>
     </section>
   );
 };

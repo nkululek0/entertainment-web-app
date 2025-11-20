@@ -49,3 +49,30 @@
   text-align: center;
   margin-top: 10px !important;
 }
+.card-title::after {
+  content: "";
+  border: 1px solid #fff;
+  display: block;
+  width: 50%;
+  margin: 0 25%;
+  margin-top: 5px;
+}
+
+.overview-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 15px;
+  margin-top: 25px;
+}
+
+.overview {
+  h3 {
+    margin-bottom: 5px;
+  }
+}
+.genre {
+  h3 {
+    margin-bottom: 5px;
+  }
+}
