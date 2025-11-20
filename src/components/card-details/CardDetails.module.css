@@ -55,7 +55,7 @@
   display: block;
   width: 50%;
   margin: 0 25%;
-  margin-top: 5px;
+  margin-top: 2px;
 }
 
 .overview-wrapper {
@@ -64,6 +64,10 @@
   gap: 15px;
   margin: 15px;
   margin-top: 25px;
+}
+
+.tagline {
+  font-style: italic;
 }
 
 .overview {
