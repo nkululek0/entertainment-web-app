@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import type { RefObject } from 'react';
-import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useLoaderData, useNavigate, Link } from '@tanstack/react-router';
 import { useDraggable } from 'react-use-draggable-scroll';
 
 import type { Show } from '@/api/types';
@@ -65,13 +65,12 @@ export const Route = createFileRoute('/')({
   }
 });
 
-
 function RouteComponent() {
-  const draggableRef = useRef<HTMLDivElement>(null) as RefObject<HTMLInputElement>;
-  const { events } = useDraggable(draggableRef, { applyRubberBandEffect: true });
   const { trendingMedia, recommended, page } = useLoaderData({ from: '/' });
   const totalPages = 5;
   const navigate = useNavigate({ from: '/' });
+  const draggableRef = useRef<HTMLDivElement>(null) as RefObject<HTMLInputElement>;
+  const { events } = useDraggable(draggableRef, { applyRubberBandEffect: true });
 
   const navigateTo = (pageSymbol: PageNavigationSymbols) => {
     handlePageChange(navigate, pageSymbol, page, totalPages);
@@ -90,16 +89,22 @@ function RouteComponent() {
             {
               trendingMedia?.map((item: Show, index: number) => {
                 return (
-                  <Card
-                    key={ index }
-                    type='primary'
-                    media_type={ item.media_type }
-                    title={ item.title }
-                    name={ item.name }
-                    release_date={ item.release_date }
-                    first_air_date={ item.first_air_date }
-                    poster_path={ item.poster_path }
-                    vote_average={ item.vote_average }
+                  <Link
+                    key={ index}
+                    to={ `/show-details/$type/$id` }
+                    params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
+                    children={
+                      <Card
+                        type='primary'
+                        media_type={ item.media_type }
+                        title={ item.title }
+                        name={ item.name }
+                        release_date={ item.release_date }
+                        first_air_date={ item.first_air_date }
+                        poster_path={ item.poster_path }
+                        vote_average={ item.vote_average }
+                      />
+                    }
                   />
                 );
               })
@@ -113,15 +118,21 @@ function RouteComponent() {
           {
             recommended?.map((item: Show, index: number) => {
               return (
-                <Card
+                <Link
                   key={ index }
-                  type='secondary'
-                  title={ item.title }
-                  name={ item.name }
-                  release_date={ item.release_date }
-                  first_air_date={ item.first_air_date }
-                  poster_path={ item.poster_path }
-                  vote_average={ item.vote_average }
+                  to={ `/show-details/$type/$id` }
+                  params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
+                  children={
+                    <Card
+                      type='secondary'
+                      title={ item.title }
+                      name={ item.name }
+                      release_date={ item.release_date }
+                      first_air_date={ item.first_air_date }
+                      poster_path={ item.poster_path }
+                      vote_average={ item.vote_average }
+                    />
+                  }
                 />
               );
             })
