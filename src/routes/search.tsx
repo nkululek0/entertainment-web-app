@@ -6,15 +6,7 @@ import type { Show } from '@/api/types';
 import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/card';
 
-type SearchResultData = {
-  searchResult: Show[];
-  isBookmarked: boolean;
-};
-
-const setSearchResultData = (data: Show[], resultData: SearchResultData) => {
-  if (data.length == 0) resultData.searchResult = [];
-  else resultData.searchResult = [...data];
-};
+const sortContent = (a: Show, b: Show) => b.popularity - a.popularity;
 
 export const Route = createFileRoute('/search')({
   component: RouteComponent,
@@ -26,50 +18,56 @@ export const Route = createFileRoute('/search')({
     }
   },
   loaderDeps: ({ search: { query, category, isBookmarked }}) => ({ query, category, isBookmarked }),
-  loader: async ({ deps: { query, category, isBookmarked }}) => {
-    const result: SearchResultData = { searchResult: [], isBookmarked: isBookmarked || false };
+  loader: async ({ deps: { query, category }}) => {
     query = query.trim();
 
     if (!query) {
-      if (category) {
-        const data = await API.getTrending(category === 'Movie' ? 'movie' : 'tv');
-
-        setSearchResultData(data.results, result);
-      }
-      else {
+      if (!category) {
         const [trendingMovies, trendingTvSeries] = await Promise.all([
           API.getTrending('movie'),
           API.getTrending('tv')
         ]);
         const data = [...trendingMovies.results, ...trendingTvSeries.results];
-        data.sort((a: Show, b: Show) => b.popularity - a.popularity);
 
-        setSearchResultData(data, result);
+        data.sort(sortContent);
+
+        return {
+          searchResult: data
+        };
       }
+
+      const data = await API.getTrending(category === 'Movie' ? 'movie' : 'tv');
+
+      return {
+        searchResult: data.results
+      };
     }
 
-    if (query && !category) {
-      const [movieSearch, tvSearch] = await Promise.all([
-        API.getSearch('movie', query, 1),
-        API.getSearch('tv', query, 1)
-      ]);
-      const data = [...movieSearch.results, ...tvSearch.results];
-      data.sort((a: Show, b: Show) => b.popularity - a.popularity);
+    if (query) {
+      if (!category) {
+        const [movieSearch, tvSearch] = await Promise.all([
+          API.getSearch('movie', query, 1),
+          API.getSearch('tv', query, 1)
+        ]);
+        const data = [...movieSearch.results, ...tvSearch.results];
 
-      setSearchResultData(data, result);
-    }
+        data.sort(sortContent);
 
-    if (query && category) {
+        return {
+          searchResult: data
+        };
+      }
+
       const data = await API.getSearch(category === 'Movie' ? 'movie' : 'tv', query, 1);
 
-      setSearchResultData(data.results, result);
+      return {
+        searchResult: data.results
+      };
     }
 
     // if (isBookmarked) {
     //   searchResult = searchResult.filter((item: MediaItem) => item.isBookmarked);
     // }
-
-    return result;
   },
   pendingComponent: () => {
     return (
@@ -87,9 +85,13 @@ export const Route = createFileRoute('/search')({
   }
 });
 
+type SearchResultData = {
+  searchResult: Show[]
+};
+
 function RouteComponent() {
   const { query } = useSearch({ from: '/search' });
-  const { searchResult } = useLoaderData({ from: '/search' });
+  const { searchResult } = useLoaderData({ from: '/search' }) as SearchResultData;
 
   return (
     <section className='search-wrapper'>
