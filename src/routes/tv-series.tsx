@@ -1,4 +1,4 @@
-import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useLoaderData, useNavigate, Link } from '@tanstack/react-router';
 
 import API from '@/api/api';
 
@@ -58,15 +58,21 @@ function RouteComponent() {
         {
           tvSeries?.map((item, index) => {
             return (
-              <Card
+              <Link
                 key={ index }
-                type='secondary'
-                title={ item.title }
-                name={ item.name }
-                release_date={ item.release_date }
-                first_air_date={ item.first_air_date }
-                poster_path={ item.poster_path }
-                vote_average={ item.vote_average }
+                to='/show-details/$type/$id'
+                params={{ type: 'tv', id: item.id.toString() }}
+                children={
+                  <Card
+                    type='secondary'
+                    title={ item.title }
+                    name={ item.name }
+                    release_date={ item.release_date }
+                    first_air_date={ item.first_air_date }
+                    poster_path={ item.poster_path }
+                    vote_average={ item.vote_average }
+                  />
+                }
               />
             );
           })
