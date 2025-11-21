@@ -91,7 +91,7 @@ function RouteComponent() {
                 return (
                   <Link
                     key={ index}
-                    to={ `/show-details/$type/$id` }
+                    to='/show-details/$type/$id'
                     params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
                     children={
                       <Card
@@ -120,7 +120,7 @@ function RouteComponent() {
               return (
                 <Link
                   key={ index }
-                  to={ `/show-details/$type/$id` }
+                  to='/show-details/$type/$id'
                   params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
                   children={
                     <Card
