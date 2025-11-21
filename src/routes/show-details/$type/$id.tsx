@@ -37,20 +37,22 @@ function RouteComponent() {
 
   return (
     <section className='show-details-wrapper'>
-      <CardDetails
-        backdropPath={ showDetails.backdrop_path }
-        genres={ showDetails.genres }
-        overview={ showDetails.overview }
-        posterPath={ showDetails.poster_path }
-        releaseDate={ showDetails.release_date }
-        firstAirDate={ showDetails.first_air_date }
-        status={ showDetails.status }
-        tagline={ showDetails.tagline }
-        title={ showDetails.title }
-        name={ showDetails.name }
-        video={ showDetails.video }
-        voteAverage={ showDetails.vote_average }
-      />
+      <div className='details'>
+        <CardDetails
+          backdropPath={ showDetails.backdrop_path }
+          genres={ showDetails.genres }
+          overview={ showDetails.overview }
+          posterPath={ showDetails.poster_path }
+          releaseDate={ showDetails.release_date }
+          firstAirDate={ showDetails.first_air_date }
+          status={ showDetails.status }
+          tagline={ showDetails.tagline }
+          title={ showDetails.title }
+          name={ showDetails.name }
+          video={ showDetails.video }
+          voteAverage={ showDetails.vote_average }
+        />
+      </div>
     </section>
   );
 }
