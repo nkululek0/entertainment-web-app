@@ -21,6 +21,10 @@ body {
   overflow-x: clip;
 }
 
+a {
+  text-decoration: none;
+}
+
 #root {
   max-width: 1280px;
   background-color: var(--blue-950);
@@ -67,7 +71,6 @@ body {
 
   > a {
     margin: 0px 15px;
-    text-decoration: none;
   }
 
   h2 {
@@ -366,6 +369,10 @@ body {
       grid-template-columns: 1fr 1fr 1fr 1fr;
       margin: 0px 30px;
     }
+  }
+
+  .show-details-wrapper .details {
+    margin: 0px 30px;
   }
 }
 
