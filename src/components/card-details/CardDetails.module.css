@@ -10,6 +10,7 @@
     top: 25px;
     left: 15px;
     border-radius: 8px;
+    box-shadow: 1px 1px 4px #d5d5d5;
   }
 }
 
@@ -130,6 +131,7 @@
   .card-details-wrapper-desktop {
     display: block;
     height: 450px;
+    border-radius: 8px;
   }
 
   .card-details-background-overlay-desktop {
@@ -137,6 +139,7 @@
     padding: 25px;
     gap: 20px;
     background-image: linear-gradient(to right, #000, #0000008c);
+    border-radius: 8px;
   }
 
   .poster-container-desktop {
