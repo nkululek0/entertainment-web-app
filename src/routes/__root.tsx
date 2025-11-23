@@ -10,7 +10,7 @@ import Avatar from '@/assets/image-avatar.png';
 const colours = {
   white: '#fff',
   blue: '#5A698F',
-  red: '#FC4747',
+  red: '#FC4747'
 };
 
 type SearchPlaceHolderText = {
@@ -28,47 +28,80 @@ const searchPlaceHolderText: SearchPlaceHolderText = {
   '/bookmark': 'Search for bookmarked shows'
 };
 
-type SearchCategory = {
+type Categories = {
   [key: string]: string
+  '/': string
   '/movies': string
   '/tv-series': string
+  '/bookmark': string
 };
 
-const searchCategory: SearchCategory = {
-  '/movies': 'Movie',
-  '/tv-series': 'TV Series'
+const categories: Categories = {
+  '/': '',
+  '/movies': 'movie',
+  '/tv-series': 'tv',
+  '/bookmark': 'bookmark'
 };
+
+type CategoriesReversed = {
+  [key: string]: string
+  '': string
+  'movie': string
+  'tv': string
+  'bookmark': string
+};
+
+const categoriesReversed: CategoriesReversed = {
+  '': '/',
+  'movie': '/movies',
+  'tv': '/tv-series',
+  'bookmark': '/bookmark'
+};
+
+type LocationPath = '/' | '/bookmark' | '/movies' | '/search' | '/tv-series' | '/show-details';
 
 function RootLayout() {
-  const searchRef = useRef('');
+  const searchRef = {
+    query: useRef(''),
+    category: useRef('')
+  };
   const navigate = useNavigate();
   const location = useRouterState({ select: (s) => s.location });
-  const previousLocation = useRef<string>('');
+  const previousLocation = useRef<LocationPath>('/');
 
-  if (Object.values(location.search).length > 0 && location.search.query) {
-    const search = location.search;
+  if (location.pathname == '/search') {
+    const searchParams = { ...location.search };
 
-    if (search.category) {
-      if (search.category == 'Movie') previousLocation.current = '/movies';
-      else previousLocation.current = '/tv-series';
+    searchRef.query.current = searchParams.query as string;
+
+    if (!searchParams.category) {
+      searchRef.category.current = '';
+      previousLocation.current = '/';
     }
-    if (search.isBookmarked) previousLocation.current = '/bookmark';
+
+    searchRef.category.current = searchParams.category as string;
+    previousLocation.current = categoriesReversed[searchParams.category as string] as LocationPath;
+  }
+  else if (location.pathname.includes('/show-details')) {
+    const path = location.pathname.split('/')[2];
+
+    searchRef.category.current = path;
+    previousLocation.current = categoriesReversed[path] as LocationPath;
   }
   else {
-    if (!previousLocation.current || previousLocation.current != location.pathname) {
-      previousLocation.current = location.pathname;
-    }
+    searchRef.category.current = categories[location.pathname as string];
+    previousLocation.current = location.pathname as LocationPath;
   }
 
   const searchPlaceHolder = searchPlaceHolderText[previousLocation.current];
 
   const handleSearch = (searchInput: string) => {
-    searchRef.current = searchInput;
+    searchRef.query.current = searchInput;
     navigate({
       from: '/search',
       search: {
-        query: searchRef.current,
-        category: searchCategory[previousLocation.current],
+        query: searchRef.query.current,
+        category: searchRef.category.current,
         isBookmarked: previousLocation.current == '/bookmark'
       }
     });
@@ -88,20 +121,15 @@ function RootLayout() {
               search={{
                 page: 1
               }}
-            >
-              {
-                () => {
-                  return (
-                    <svg width='20' height='20' xmlns='http://www.w3.org/2000/svg'>
-                      <path
-                        d='M8 0H1C.4 0 0 .4 0 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1V1c0-.6-.4-1-1-1Zm0 11H1c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1v-7c0-.6-.4-1-1-1ZM19 0h-7c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1V1c0-.6-.4-1-1-1Zm0 11h-7c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1v-7c0-.6-.4-1-1-1Z'
-                        fill={ previousLocation.current == '/' ? colours.white: colours.blue }
-                      />
-                    </svg>
-                  );
-                }
+              children={
+                <svg width='20' height='20' xmlns='http://www.w3.org/2000/svg'>
+                  <path
+                    d='M8 0H1C.4 0 0 .4 0 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1V1c0-.6-.4-1-1-1Zm0 11H1c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1v-7c0-.6-.4-1-1-1ZM19 0h-7c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1V1c0-.6-.4-1-1-1Zm0 11h-7c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1v-7c0-.6-.4-1-1-1Z'
+                    fill={ previousLocation.current == '/' ? colours.white: colours.blue }
+                  />
+                </svg>
               }
-            </Link>
+            />
           </li>
           <li>
             <Link
@@ -109,20 +137,15 @@ function RootLayout() {
               search={{
                 page: 1
               }}
-            >
-              {
-                () => {
-                  return (
-                    <svg width='20' height='20' xmlns='http://www.w3.org/2000/svg'>
-                      <path
-                        d='M16.956 0H3.044A3.044 3.044 0 0 0 0 3.044v13.912A3.044 3.044 0 0 0 3.044 20h13.912A3.044 3.044 0 0 0 20 16.956V3.044A3.044 3.044 0 0 0 16.956 0ZM4 9H2V7h2v2Zm-2 2h2v2H2v-2Zm16-2h-2V7h2v2Zm-2 2h2v2h-2v-2Zm2-8.26V4h-2V2h1.26a.74.74 0 0 1 .74.74ZM2.74 2H4v2H2V2.74A.74.74 0 0 1 2.74 2ZM2 17.26V16h2v2H2.74a.74.74 0 0 1-.74-.74Zm16 0a.74.74 0 0 1-.74.74H16v-2h2v1.26Z'
-                        fill={ previousLocation.current == '/movies' ? colours.white: colours.blue }
-                      />
-                    </svg>
-                  );
-                }
+              children={
+                <svg width='20' height='20' xmlns='http://www.w3.org/2000/svg'>
+                  <path
+                    d='M16.956 0H3.044A3.044 3.044 0 0 0 0 3.044v13.912A3.044 3.044 0 0 0 3.044 20h13.912A3.044 3.044 0 0 0 20 16.956V3.044A3.044 3.044 0 0 0 16.956 0ZM4 9H2V7h2v2Zm-2 2h2v2H2v-2Zm16-2h-2V7h2v2Zm-2 2h2v2h-2v-2Zm2-8.26V4h-2V2h1.26a.74.74 0 0 1 .74.74ZM2.74 2H4v2H2V2.74A.74.74 0 0 1 2.74 2ZM2 17.26V16h2v2H2.74a.74.74 0 0 1-.74-.74Zm16 0a.74.74 0 0 1-.74.74H16v-2h2v1.26Z'
+                    fill={ previousLocation.current == '/movies' ? colours.white: colours.blue }
+                  />
+                </svg>
               }
-            </Link>
+            />
           </li>
           <li>
             <Link
@@ -130,20 +153,15 @@ function RootLayout() {
               search={{
                 page: 1
               }}
-            >
-              {
-                () => {
-                  return (
-                    <svg width='20' height='20' xmlns='http://www.w3.org/2000/svg'>
-                      <path
-                        d='M20 4.481H9.08l2.7-3.278L10.22 0 7 3.909 3.78.029 2.22 1.203l2.7 3.278H0V20h20V4.481Zm-8 13.58H2V6.42h10v11.64Zm5-3.88h-2v-1.94h2v1.94Zm0-3.88h-2V8.36h2v1.94Z'
-                        fill={ previousLocation.current == '/tv-series' ? colours.white: colours.blue }
-                      />
-                    </svg>
-                  );
-                }
+              children={
+                <svg width='20' height='20' xmlns='http://www.w3.org/2000/svg'>
+                  <path
+                    d='M20 4.481H9.08l2.7-3.278L10.22 0 7 3.909 3.78.029 2.22 1.203l2.7 3.278H0V20h20V4.481Zm-8 13.58H2V6.42h10v11.64Zm5-3.88h-2v-1.94h2v1.94Zm0-3.88h-2V8.36h2v1.94Z'
+                    fill={ previousLocation.current == '/tv-series' ? colours.white: colours.blue }
+                  />
+                </svg>
               }
-            </Link>
+            />
           </li>
           <li>
             {/* <Link to='/bookmark'>
@@ -170,13 +188,13 @@ function RootLayout() {
         <Link
           to='/search'
           search={{
-            query: searchRef.current,
-            category: searchCategory[previousLocation.current],
+            query: searchRef.query.current,
+            category: searchRef.category.current,
             isBookmarked: previousLocation.current == '/bookmark'
           }}
         >
           <Search
-            search={ searchRef.current }
+            search={ searchRef.query.current }
             onSearch={ handleSearch }
             placeHolderText={ searchPlaceHolder }
           />

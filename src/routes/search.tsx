@@ -8,13 +8,15 @@ import { Card } from '@/components/card';
 
 const sortContent = (a: Show, b: Show) => b.popularity - a.popularity;
 
+type SearchCategory = 'movie' | 'tv';
+
 export const Route = createFileRoute('/search')({
   component: RouteComponent,
-  validateSearch: (search: { query: string, category: string, isBookmarked: boolean }) => {
+  validateSearch: (search: { query: string, category?: SearchCategory, isBookmarked: boolean }) => {
     return {
-      query: (search.query) || '',
-      category: (search.category) || '',
-      isBookmarked: (search.isBookmarked) || false
+      query: (search.query) ?? '',
+      category: (search.category) ?? '',
+      isBookmarked: (search.isBookmarked) ?? false
     }
   },
   loaderDeps: ({ search: { query, category, isBookmarked }}) => ({ query, category, isBookmarked }),
@@ -36,7 +38,7 @@ export const Route = createFileRoute('/search')({
         };
       }
 
-      const data = await API.getTrending(category === 'Movie' ? 'movie' : 'tv');
+      const data = await API.getTrending(category as SearchCategory);
 
       return {
         searchResult: data.results
@@ -58,7 +60,7 @@ export const Route = createFileRoute('/search')({
         };
       }
 
-      const data = await API.getSearch(category === 'Movie' ? 'movie' : 'tv', query, 1);
+      const data = await API.getSearch(category as SearchCategory, query, 1);
 
       return {
         searchResult: data.results
