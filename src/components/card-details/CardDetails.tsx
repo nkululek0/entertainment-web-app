@@ -1,7 +1,7 @@
 import style from './CardDetails.module.css';
 
 type CardDetailsProps = {
-  backdropPath: string;
+  backdropPath: string | null;
   genres: Array<{ id: number, name: string }>;
   overview: string;
   posterPath: string;
