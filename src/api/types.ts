@@ -33,7 +33,7 @@ export type Show = z.infer<typeof ShowSchema>;
 export type ShowResponse = z.infer<typeof ShowResponseSchema>;
 
 export const ShowDetailsSchema = z.object({
-  backdrop_path: z.string(),
+  backdrop_path: z.union([z.string(), z.null()]),
   genres: z.array(z.object({
     id: z.number(),
     name: z.string(),
