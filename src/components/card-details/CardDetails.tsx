@@ -15,6 +15,19 @@ type CardDetailsProps = {
   voteAverage: number;
 };
 
+type RatingColour = {
+  [key: string]: string
+  red: string
+  yellow: string
+  green: string
+};
+
+const ratingColour: RatingColour = {
+  red: '#FC4747',
+  yellow: '#FFFF00',
+  green: '#00FF00'
+};
+
 const imageBaseURL = 'https://image.tmdb.org/t/p/original';
 
 export function CardDetails(props: CardDetailsProps) {
@@ -33,11 +46,21 @@ export function CardDetails(props: CardDetailsProps) {
                 <img src={ imageBaseURL + posterPath } alt={ cardTitle } />
               </div>
               <div className={ style['backdrop-container'] }>
-                <img src={ imageBaseURL + backdropPath } alt='' />
+                {
+                  backdropPath &&
+                  <img src={ imageBaseURL + backdropPath } alt='' />
+                }
               </div>
             </div>
             <div className={ style['rating-container'] }>
-              <span>{ Number(voteAverage.toFixed(1)) * 10 }%</span>
+              <span className={ style['rating-parent'] }>
+                <span
+                  className={ style['rating'] }
+                  style={{ border: `2px solid ${ voteAverage >= 7 ? ratingColour.green : voteAverage >= 5 ? ratingColour.yellow : ratingColour.red }` }}
+                >
+                  { Number(voteAverage.toFixed(1)) * 10 }%
+                </span>
+              </span>
             </div>
             <div className={ style['card-title-container'] }>
               <div className={ style['card-title-wrapper'] }>
@@ -79,7 +102,14 @@ export function CardDetails(props: CardDetailsProps) {
               </div>
             </div>
             <div className={ style['rating-container-desktop'] }>
-              <span>{ Number(voteAverage.toFixed(1)) * 10 }%</span>
+              <span className={ style['parent-rating-desktop'] }>
+                <span
+                  className={ style['rating-desktop'] }
+                  style={{ border: `2px solid ${ voteAverage >= 7 ? ratingColour.green : voteAverage >= 5 ? ratingColour.yellow : ratingColour.red }` }}
+                >
+                  { Number(voteAverage.toFixed(1)) * 10 }%
+                </span>
+              </span>
             </div>
             <div className={ style['overview'] }>
               <p className={ style['tagline-desktop'] }>{ tagline }</p>
