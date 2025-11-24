@@ -118,9 +118,7 @@ export function Card(props: CardProps) {
               backgroundPosition: 'center'
             }}
           >
-            <span className={ style['bookmark-container'] }>
-              { icons.bookmark.empty }
-            </span>
+            { icons.bookmark.empty }
             <div className={ style['overlay-container'] }>
               <div className={ style['overlay'] }>
                 { icons.play }
