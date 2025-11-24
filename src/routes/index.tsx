@@ -1,7 +1,5 @@
-import { useRef } from 'react';
-import type { RefObject } from 'react';
 import { createFileRoute, useLoaderData, useNavigate, Link } from '@tanstack/react-router';
-import { useDraggable } from 'react-use-draggable-scroll';
+import ScrollContainer from 'react-indiana-drag-scroll';
 
 import type { Show } from '@/api/types';
 import API from '@/api/api';
@@ -69,8 +67,6 @@ function RouteComponent() {
   const { trendingMedia, recommended, page } = useLoaderData({ from: '/' });
   const totalPages = 5;
   const navigate = useNavigate({ from: '/' });
-  const draggableRef = useRef<HTMLDivElement>(null) as RefObject<HTMLInputElement>;
-  const { events } = useDraggable(draggableRef, { applyRubberBandEffect: true });
 
   const navigateTo = (pageSymbol: PageNavigationSymbols) => {
     handlePageChange(navigate, pageSymbol, page, totalPages);
@@ -80,10 +76,8 @@ function RouteComponent() {
     <section className='home-content'>
       <section className='trending-wrapper'>
         <h2>Trending</h2>
-        <div
-          className='trending-media-wrapper'
-          { ...events }
-          ref={ draggableRef }
+        <ScrollContainer
+          className="scroll-container trending-media-wrapper"
         >
           <section className='trending'>
             {
@@ -110,7 +104,7 @@ function RouteComponent() {
               })
             }
           </section>
-        </div>
+        </ScrollContainer>
       </section>
       <section className='recommended-wrapper'>
         <h2>Recommended for you</h2>

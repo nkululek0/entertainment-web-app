@@ -146,7 +146,7 @@
 @media screen and (min-width: 768px) {
   .primary {
     width: 60dvw;
-    height: 250px;
+    height: 200px;
   }
 
   .secondary {
@@ -165,7 +165,6 @@
 @media screen and (min-width: 1120px) {
   .primary {
     width: 400px;
-    height: 250px;
   }
 
   .secondary {

@@ -15,7 +15,7 @@
     "lodash": "^4.17.21",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-use-draggable-scroll": "^0.4.7",
+    "react-indiana-drag-scroll": "^2.2.1",
     "zod": "^4.1.12"
   },
   "devDependencies": {
