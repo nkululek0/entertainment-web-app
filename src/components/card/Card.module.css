@@ -7,6 +7,7 @@
   flex-direction: column-reverse;
   gap: 5px;
   padding: 10px;
+  position: relative;
 
   h4 {
     background: rgba(0, 0, 0, 0.5);
@@ -66,8 +67,9 @@
   display: flex;
   flex-direction: column-reverse;
   min-width: 40dvw;
-  min-height: 50dvh;
-  gap: 0.5rem;
+  height: 350px;
+  gap: 5px;
+  position: relative;
 }
 
 .info-secondary {
@@ -97,17 +99,47 @@
 }
 
 .background {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.secondary-bookmark-container {
+  align-self: flex-end;
+}
+
+.overlay-container {
+  display: none;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  right: 0px;
+  bottom: 0px;
+}
+.secondary:hover .overlay-container {
+  display: block;
+}
+.primary:hover .overlay-container {
+  display: block;
+}
+
+.overlay {
+  position: relative;
+  width: 100%;
   height: 100%;
   display: flex;
-  justify-content: flex-end;
-  flex-direction: column-reverse;
-  padding: 8px;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 8px;
 }
 
 @media screen and (min-width: 375px) {
   .secondary {
-    height: 150px;
+    height: 300px;
   }
 }
 
@@ -119,7 +151,6 @@
 
   .secondary {
     min-width: 29dvw;
-    height: 200px;
   }
 
   .info-secondary {
@@ -134,7 +165,7 @@
 @media screen and (min-width: 1120px) {
   .primary {
     width: 400px;
-    height: 200px;
+    height: 250px;
   }
 
   .secondary {
