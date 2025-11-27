@@ -20,7 +20,7 @@ export function CastCard(props: CastProps) {
         {
           !profile_path &&
           <div className={ style['image'] }>
-            <p>No Image</p>
+            <p className={ style['no-image'] }>No Image!</p>
           </div>
         }
         {
@@ -28,7 +28,7 @@ export function CastCard(props: CastProps) {
           <img src={ IMAGE_BASE_URL + profile_path } alt={ name } className={ style['image'] } />
         }
       </div>
-      <div className='cast-info'>
+      <div className={ style['cast-info'] }>
         <h4>{ name }</h4>
         <p>{ character }</p>
       </div>

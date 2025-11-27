@@ -2,14 +2,23 @@
   height: max-content;
 }
 
-.image-container {
-  margin-bottom: 5px;
-}
-
 .image {
   height: 150px;
   width: 120px;
   border-radius: 8px;
+}
+
+.no-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  border: 1px solid #fff;
+  border-radius: 8px;
+}
+
+.cast-info {
+  margin-top: 5px;
 }
 
 @media screen and (min-width: 375px) {
