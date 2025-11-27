@@ -60,13 +60,10 @@ export const ShowCastSchema = z.object({
   cast: z.array(z.object({
     gender: z.number(),
     id: z.number(),
-    known_for_department: z.string(),
     name: z.string(),
-    original_name: z.string(),
-    popularity: z.number(),
     profile_path: z.string().nullable(),
-    cast_id: z.number(),
-    character: z.string()
+    character: z.string(),
+    order: z.number()
   }))
 });
 
