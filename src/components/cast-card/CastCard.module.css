@@ -1,0 +1,27 @@
+.cast {
+  height: max-content;
+}
+
+.image-container {
+  margin-bottom: 5px;
+}
+
+.image {
+  height: 150px;
+  width: 120px;
+  border-radius: 8px;
+}
+
+@media screen and (min-width: 375px) {
+  .image {
+    height: 200px;
+    width: 150px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .image {
+    height: 250px;
+    width: 200px;
+  }
+}
