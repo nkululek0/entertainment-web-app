@@ -1,4 +1,4 @@
-import { type Show, type ShowResponse, type ShowDetails, ShowResponseSchema, ShowSchema, ShowDetailsSchema } from './types';
+import { type Show, type ShowResponse, type ShowDetails, type ShowCast, ShowResponseSchema, ShowSchema, ShowDetailsSchema, ShowCastSchema } from './types';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -42,7 +42,7 @@ const API = {
     const url = getUrl(`${ type }/${ id }/credits`);
     const data = await processResponse(url.href, 'showCast');
 
-    return data as ShowResponse;
+    return data as ShowCast;
   }
 };
 
@@ -74,7 +74,7 @@ const processResponse = async (url: string, processType: ProcessResponseType) =>
 
       break;
     case 'showCast':
-      const showCastData = ShowResponseSchema.safeParse(responseData);
+      const showCastData = ShowCastSchema.safeParse(responseData);
 
       if (showCastData.success) {
         return showCastData.data;
