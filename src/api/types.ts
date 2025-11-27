@@ -54,3 +54,20 @@ export const ShowDetailsSchema = z.object({
 });
 
 export type ShowDetails = z.infer<typeof ShowDetailsSchema>;
+
+export const ShowCastSchema = z.object({
+  id: z.number(),
+  cast: z.array(z.object({
+    gender: z.number(),
+    id: z.number(),
+    known_for_department: z.string(),
+    name: z.string(),
+    original_name: z.string(),
+    popularity: z.number(),
+    profile_path: z.string().nullable(),
+    cast_id: z.number(),
+    character: z.string()
+  }))
+});
+
+export type ShowCast = z.infer<typeof ShowCastSchema>;

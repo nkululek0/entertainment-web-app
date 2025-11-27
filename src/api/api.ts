@@ -5,6 +5,49 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 type ShowType = 'movie' | 'tv';
 
+type ProcessResponseType = 'show' | 'showDetails' | 'showCast';
+
+const API = {
+  getTrending: async (type: ShowType) => {
+    const url = getUrl(`trending/${ type }/day`);
+    const data = await processResponse(url.href, 'show');
+
+    return data as ShowResponse;
+  },
+  getTopRated: async (type: ShowType, page: number = 1) => {
+    const url = getUrl(`${ type }/top_rated`, page);
+    const data = await processResponse(url.href, 'show');
+
+    return data as ShowResponse;
+  },
+  getPopular: async (type: ShowType, page: number = 1) => {
+    const url = getUrl(`${ type }/popular`, page);
+    const data = await processResponse(url.href, 'show');
+
+    return data as ShowResponse;
+  },
+  getSearch: async (type: ShowType, query: string, page: number = 1) => {
+    const url = getUrl(`search/${ type }`, page, query);
+    const data = await processResponse(url.href, 'show');
+
+    return data as ShowResponse;
+  },
+  getShowDetails: async (type: ShowType, id: number) => {
+    const url = getUrl(`${ type }/${ id }`);
+    const data = await processResponse(url.href, 'showDetails');
+
+    return data as ShowDetails;
+  },
+  getShowCast: async (type: ShowType, id: number) => {
+    const url = getUrl(`${ type }/${ id }/credits`);
+    const data = await processResponse(url.href, 'showCast');
+
+    return data as ShowResponse;
+  }
+};
+
+export default API;
+
 const getUrl = (path: string, page?: number, query?: string) => {
   const url = new URL(`${ BASE_URL }/${ path }`);
 
@@ -17,59 +60,36 @@ const getUrl = (path: string, page?: number, query?: string) => {
   return url;
 };
 
-const processResponse = async (url: string) => {
+const processResponse = async (url: string, processType: ProcessResponseType) => {
   const response = await fetch(url);
   const responseData = await response.json();
-  const validDataResult = responseData.results.filter((result: Show) => ShowSchema.safeParse(result).success);
-  responseData.results = validDataResult;
-  const validData = ShowResponseSchema.safeParse(responseData);
 
-  if (validData.success) {
-    return validData.data;
+  switch (processType) {
+    case 'showDetails':
+      const showDetailsData = ShowDetailsSchema.safeParse(responseData);
+
+      if (showDetailsData.success) {
+        return showDetailsData.data;
+      }
+
+      break;
+    case 'showCast':
+      const showCastData = ShowResponseSchema.safeParse(responseData);
+
+      if (showCastData.success) {
+        return showCastData.data;
+      }
+
+      break;
+    default:
+      const showData = responseData.results.filter((result: Show) => ShowSchema.safeParse(result).success);
+      responseData.results = showData;
+      const showResponseData = ShowResponseSchema.safeParse(responseData);
+
+      if (showResponseData.success) {
+        return showResponseData.data;
+      }
+
+      break;
   }
 };
-
-const processShowDetailsResponse = async (url: string) => {
-  const response = await fetch(url);
-  const responseData = await response.json();
-  const validData = ShowDetailsSchema.safeParse(responseData);
-
-  if (validData.success) {
-    return validData.data;
-  }
-}
-
-const API = {
-  getTrending: async (type: ShowType) => {
-    const url = getUrl(`trending/${ type }/day`);
-    const data = await processResponse(url.href);
-
-    return data as ShowResponse;
-  },
-  getTopRated: async (type: ShowType, page: number = 1) => {
-    const url = getUrl(`${ type }/top_rated`, page);
-    const data = await processResponse(url.href);
-
-    return data as ShowResponse;
-  },
-  getPopular: async (type: ShowType, page: number = 1) => {
-    const url = getUrl(`${ type }/popular`, page);
-    const data = await processResponse(url.href);
-
-    return data as ShowResponse;
-  },
-  getSearch: async (type: ShowType, query: string, page: number = 1) => {
-    const url = getUrl(`search/${ type }`, page, query);
-    const data = await processResponse(url.href);
-
-    return data as ShowResponse;
-  },
-  getShowDetails: async (type: ShowType, id: number) => {
-    const url = getUrl(`${ type }/${ id }`);
-    const data = await processShowDetailsResponse(url.href);
-
-    return data as ShowDetails;
-  }
-};
-
-export default API;
