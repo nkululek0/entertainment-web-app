@@ -1,11 +1,14 @@
-import { type Show, type ShowResponse, type ShowDetails, type ShowCast, ShowResponseSchema, ShowSchema, ShowDetailsSchema, ShowCastSchema } from './types';
+import {
+  type Show, type ShowResponse, type ShowDetails, type ShowCast, type ShowImages,
+  ShowResponseSchema, ShowSchema, ShowDetailsSchema, ShowCastSchema, ShowImagesSchema
+} from './types';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 type ShowType = 'movie' | 'tv';
 
-type ProcessResponseType = 'show' | 'showDetails' | 'showCast';
+type ProcessResponseType = 'show' | 'showDetails' | 'showCast' | 'showImages';
 
 const API = {
   getTrending: async (type: ShowType) => {
@@ -43,6 +46,12 @@ const API = {
     const data = await processResponse(url.href, 'showCast');
 
     return data as ShowCast;
+  },
+  getShowImages: async (type: ShowType, id: number) => {
+    const url = getUrl(`${ type }/${ id }/images`);
+    const data = await processResponse(url.href, 'showImages');
+
+    return data as ShowImages;
   }
 };
 
@@ -80,6 +89,13 @@ const processResponse = async (url: string, processType: ProcessResponseType) =>
         return showCastData.data;
       }
 
+      break;
+    case 'showImages':
+      const showImagesData = ShowImagesSchema.safeParse(responseData);
+
+      if (showImagesData.success) {
+        return showImagesData.data;
+      }
       break;
     default:
       const showData = responseData.results.filter((result: Show) => ShowSchema.safeParse(result).success);

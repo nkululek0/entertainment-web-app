@@ -1,7 +1,7 @@
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import ScrollContainer from 'react-indiana-drag-scroll';
 
-import { type ShowCast } from '@/api/types';
+import { type ShowCast, type ShowImages } from '@/api/types';
 
 import { LoadSpinner } from '@/components/load-spinner';
 import { CardDetails } from '@/components/card-details';
@@ -14,14 +14,16 @@ type ShowType = 'movie' | 'tv';
 export const Route = createFileRoute('/show-details/$type/$id')({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const [showDetails, showCast] = await Promise.all([
+    const [showDetails, showCast, showImages] = await Promise.all([
       await API.getShowDetails(params.type as ShowType, Number(params.id)),
-      await API.getShowCast(params.type as ShowType, Number(params.id))
+      await API.getShowCast(params.type as ShowType, Number(params.id)),
+      await API.getShowImages(params.type as ShowType, Number(params.id))
     ]);
 
     return {
       showDetails: showDetails,
-      showCast: showCast
+      showCast: showCast,
+      showImages: showImages
     };
   },
   pendingComponent: () => {
@@ -41,7 +43,7 @@ export const Route = createFileRoute('/show-details/$type/$id')({
 });
 
 function RouteComponent() {
-  const { showDetails, showCast } = useLoaderData({ from: '/show-details/$type/$id' });
+  const { showDetails, showCast, showImages } = useLoaderData({ from: '/show-details/$type/$id' });
 
   return (
     <section className='show-details-wrapper'>
@@ -77,6 +79,20 @@ function RouteComponent() {
                     character={ cast.character }
                     order={ cast.order }
                   />
+                );
+              })
+            }
+          </ScrollContainer>
+        </div>
+      </div>
+      <div className="show-media-wrapper">
+        <h3>Media</h3>
+        <div className='media-slideshow-container'>
+          <ScrollContainer className="scroll-container media-slideshow">
+            {
+              showImages.backdrops.map((backdrop: ShowImages['backdrops'][0], index: number) => {
+                return (
+                  <img key={ index } src={ backdrop.file_path } alt={ backdrop.file_path } />
                 );
               })
             }

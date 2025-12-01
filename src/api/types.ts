@@ -68,3 +68,16 @@ export const ShowCastSchema = z.object({
 });
 
 export type ShowCast = z.infer<typeof ShowCastSchema>;
+
+export const ShowImagesSchema = z.object({
+  backdrops: z.array(z.object({
+    file_path: z.string(),
+    vote_average: z.number()
+  })),
+  posters: z.array(z.object({
+    file_path: z.string(),
+    vote_average: z.number()
+  }))
+});
+
+export type ShowImages = z.infer<typeof ShowImagesSchema>;
