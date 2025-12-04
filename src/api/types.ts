@@ -81,3 +81,13 @@ export const ShowImagesSchema = z.object({
 });
 
 export type ShowImages = z.infer<typeof ShowImagesSchema>;
+
+export const ShowVideoSchema = z.object({
+  results: z.array(z.object({
+    key: z.string(),
+    id: z.string(),
+    site: z.string()
+  }))
+});
+
+export type ShowVideo = z.infer<typeof ShowVideoSchema>;
