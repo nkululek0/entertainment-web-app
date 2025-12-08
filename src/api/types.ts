@@ -86,6 +86,7 @@ export const ShowVideoSchema = z.object({
   results: z.array(z.object({
     key: z.string(),
     id: z.string(),
+    name: z.string(),
     site: z.string()
   }))
 });

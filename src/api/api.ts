@@ -1,14 +1,12 @@
 import {
-  type Show, type ShowResponse, type ShowDetails, type ShowCast, type ShowImages,
-  ShowResponseSchema, ShowSchema, ShowDetailsSchema, ShowCastSchema, ShowImagesSchema
+  type Show, type ShowResponse, type ShowDetails, type ShowCast, type ShowImages, type ShowVideo,
+  ShowResponseSchema, ShowSchema, ShowDetailsSchema, ShowCastSchema, ShowImagesSchema, ShowVideoSchema
 } from './types';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 type ShowType = 'movie' | 'tv';
-
-type ProcessResponseType = 'show' | 'showDetails' | 'showCast' | 'showImages';
 
 const API = {
   getTrending: async (type: ShowType) => {
@@ -52,10 +50,14 @@ const API = {
     const data = await processResponse(url.href, 'showImages');
 
     return data as ShowImages;
+  },
+  getShowVideos: async (type: ShowType, id: number) => {
+    const url = getUrl(`${ type }/${ id }/videos`);
+    const data = await processResponse(url.href, 'showVideos');
+
+    return data as ShowVideo;
   }
 };
-
-export default API;
 
 const getUrl = (path: string, page?: number, query?: string) => {
   const url = new URL(`${ BASE_URL }/${ path }`);
@@ -68,6 +70,8 @@ const getUrl = (path: string, page?: number, query?: string) => {
 
   return url;
 };
+
+type ProcessResponseType = 'show' | 'showDetails' | 'showCast' | 'showImages' | 'showVideos';
 
 const processResponse = async (url: string, processType: ProcessResponseType) => {
   const response = await fetch(url);
@@ -96,6 +100,15 @@ const processResponse = async (url: string, processType: ProcessResponseType) =>
       if (showImagesData.success) {
         return showImagesData.data;
       }
+
+      break;
+    case 'showVideos':
+      const showVideosData = ShowVideoSchema.safeParse(responseData);
+
+      if (showVideosData.success) {
+        return showVideosData.data;
+      }
+
       break;
     default:
       const showData = responseData.results.filter((result: Show) => ShowSchema.safeParse(result).success);
@@ -109,3 +122,5 @@ const processResponse = async (url: string, processType: ProcessResponseType) =>
       break;
   }
 };
+
+export default API;
