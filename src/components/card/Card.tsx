@@ -1,5 +1,7 @@
 import style from './Card.module.css';
 
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
+
 const icons = {
   movie: (<svg viewBox='0 0 20 20' width='10' height='10' xmlns='http://www.w3.org/2000/svg'>
     <path
@@ -66,14 +68,13 @@ type CardProps = {
 
 export function Card(props: CardProps) {
   const { type, media_type, title, name, release_date, first_air_date, poster_path, vote_average } = props;
-  const imageBaseURL = 'https://image.tmdb.org/t/p/original';
 
   return (
     <>
       {  type == 'primary' &&
         <article
           style={{
-            backgroundImage: `url(${ imageBaseURL + poster_path })`,
+            backgroundImage: `url(${ IMAGE_BASE_URL + poster_path })`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -113,7 +114,7 @@ export function Card(props: CardProps) {
           <div
             className={ style['background'] }
             style={{
-              backgroundImage: `url(${ imageBaseURL + poster_path })`,
+              backgroundImage: `url(${ IMAGE_BASE_URL + poster_path })`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}

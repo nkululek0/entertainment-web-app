@@ -1,5 +1,7 @@
 import style from './CardDetails.module.css';
 
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
+
 type CardDetailsProps = {
   backdropPath: string | null;
   genres: Array<{ id: number, name: string }>;
@@ -28,8 +30,6 @@ const ratingColour: RatingColour = {
   green: '#00FF00'
 };
 
-const imageBaseURL = 'https://image.tmdb.org/t/p/original';
-
 export function CardDetails(props: CardDetailsProps) {
   const { backdropPath, genres, overview, posterPath, releaseDate, firstAirDate, tagline, title, name, voteAverage } = props;
   const cardTitle = title ?? name;
@@ -43,12 +43,12 @@ export function CardDetails(props: CardDetailsProps) {
           <div className='media'>
             <div className='media-first-child'>
               <div className={ style['poster-container'] }>
-                <img src={ imageBaseURL + posterPath } alt={ cardTitle } />
+                <img src={ IMAGE_BASE_URL + posterPath } alt={ cardTitle } />
               </div>
               <div className={ style['backdrop-container'] }>
                 {
                   backdropPath &&
-                  <img src={ imageBaseURL + backdropPath } alt='' />
+                  <img src={ IMAGE_BASE_URL + backdropPath } alt='' />
                 }
               </div>
             </div>
@@ -85,14 +85,14 @@ export function CardDetails(props: CardDetailsProps) {
       <section
         className={ style['card-details-wrapper-desktop'] }
         style={{
-          backgroundImage: `url(${ imageBaseURL + backdropPath })`,
+          backgroundImage: `url(${ IMAGE_BASE_URL + backdropPath })`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
         <div className={ style['card-details-background-overlay-desktop'] }>
           <div className={ style['poster-container-desktop'] }>
-            <img src={ imageBaseURL + posterPath } alt={ cardTitle } />
+            <img src={ IMAGE_BASE_URL + posterPath } alt={ cardTitle } />
           </div>
           <section className={ style['content-wrapper-desktop'] }>
             <div className={ style['card-title-container'] }>
