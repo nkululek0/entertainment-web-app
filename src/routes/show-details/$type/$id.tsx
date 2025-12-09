@@ -7,6 +7,7 @@ import { type ShowCast, type ShowImages, type ShowVideo } from '@/api/types';
 import { LoadSpinner } from '@/components/load-spinner';
 import { CardDetails } from '@/components/card-details';
 import { CastCard } from '@/components/cast-card';
+import { type ModalDetails, VideoModal } from '@/components/video-modal';
 
 import API from '@/api/api';
 
@@ -60,16 +61,7 @@ type ImageOptions = {
 
 type VideoOptions = {
   video: ShowVideo['results'][0]
-};
-
-const handleModalOpen = (title: string, iframeSrc: string) => {
-  document.querySelector('.modal-title')?.replaceChildren(title);
-  document.querySelector('.modal-content iframe')?.setAttribute('src', iframeSrc);
-  document.querySelector('.modal-overlay')?.classList.add('active');
-};
-
-const handleModalClose = () => {
-  document.querySelector('.modal-overlay')?.classList.remove('active');
+  setModalDetails: (title: string, iframeSrc: string) => void
 };
 
 const slideShowMediaImage = (type: 'video' | 'image', index: number, options: ImageOptions | VideoOptions) => {
@@ -86,13 +78,13 @@ const slideShowMediaImage = (type: 'video' | 'image', index: number, options: Im
     );
   }
 
-  const { video } = options as VideoOptions;
+  const { video, setModalDetails } = options as VideoOptions;
 
   return (
     <div
       className='media-slideshow-video-container'
       key={ index }
-      onClick={ () => handleModalOpen(
+      onClick={ () => setModalDetails(
         video?.name,
         `https://www.youtube.com/embed/${ video?.key }`
       ) }
@@ -123,6 +115,13 @@ type MediaSlideType = 'video' |'backdrop' | 'poster';
 function RouteComponent() {
   const { showDetails, showCast, showImages, showVideos } = useLoaderData({ from: '/show-details/$type/$id' });
   const [activeSlide, setActiveSlide] = useState<MediaSlideType>('backdrop');
+  const [modalDetails, setModalDetails] = useState<ModalDetails>({ title: '', iframeSrc: '' });
+  const [modalState, setModalState] = useState(false);
+
+  const handleModalDetails = (title: string, iframeSrc: string) => {
+    setModalDetails({ title, iframeSrc });
+    setModalState(true);
+  };
 
   return (
     <>
@@ -143,9 +142,9 @@ function RouteComponent() {
             voteAverage={ showDetails.vote_average }
           />
         </div>
-        <div className='cast-wrapper'>
+        <article className='cast-wrapper'>
           <h3>Cast</h3>
-          <div className='cast-slideshow-container'>
+          <section className='cast-slideshow-container'>
             <ScrollContainer className='scroll-container cast-slideshow'>
               {
                 showCast.cast.map((cast: ShowCast['cast'][0], index: number) => {
@@ -163,9 +162,9 @@ function RouteComponent() {
                 })
               }
             </ScrollContainer>
-          </div>
-        </div>
-        <div className='show-media-wrapper'>
+          </section>
+        </article>
+        <article className='show-media-wrapper'>
           <h3>Media</h3>
           <menu className='media-menu'>
             <ul>
@@ -183,11 +182,11 @@ function RouteComponent() {
               </li>
             </ul>
           </menu>
-          <div className='media-slideshow-container'>
+          <section className='media-slideshow-container'>
             <ScrollContainer className='scroll-container media-slideshow'>
               {
                 activeSlide == 'video' && showVideos.map((video: ShowVideo['results'][0], index: number) => (
-                  slideShowMediaImage('video', index, { video: video })
+                  slideShowMediaImage('video', index, { video: video, setModalDetails: handleModalDetails })
                 ))
               }
               {
@@ -203,25 +202,18 @@ function RouteComponent() {
                 ))
               }
             </ScrollContainer>
-          </div>
-        </div>
-      </section>
-      <div className='modal-overlay'>
-        <div className='modal'>
-          <header>
-            <h5 className='modal-title'>Modal Title</h5>
-            <button className='close-button' onClick={ handleModalClose }>X</button>
-          </header>
-          <section className='modal-content'>
-            <iframe
-              src='#'
-              frameBorder='0'
-              allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-              allowFullScreen
-            />
           </section>
-        </div>
-      </div>
+        </article>
+      </section>
+      {
+        modalDetails.title &&
+        <VideoModal
+          title={ modalDetails.title }
+          iframeSrc={ modalDetails.iframeSrc }
+          isActive={ modalState }
+          closeButton={ <button onClick={ () => { setModalState(false) } }>&#10005;</button> }
+        />
+      }
     </>
   );
 }
