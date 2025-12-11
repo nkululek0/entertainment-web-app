@@ -1,49 +1,13 @@
 import { useRef } from 'react';
 
-import { createRootRoute, Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
+import { createRootRoute, Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-
-import { Search } from '@/components/search';
 
 import Avatar from '@/assets/image-avatar.png';
 
-const colours = {
-  white: '#fff',
-  blue: '#5A698F',
-  red: '#FC4747'
-};
-
-type SearchPlaceHolderText = {
-  [key: string]: string
-  '/': string
-  '/movies': string
-  '/tv-series': string
-  '/bookmark': string
-};
-
-const searchPlaceHolderText: SearchPlaceHolderText = {
-  '/': 'Search for movies or TV series',
-  '/movies': 'Search for movies',
-  '/tv-series': 'Search for TV series',
-  '/bookmark': 'Search for bookmarked shows'
-};
+import { Profile } from '@/components/profile';
 
 type Categories = {
-  [key: string]: string
-  '/': string
-  '/movies': string
-  '/tv-series': string
-  '/bookmark': string
-};
-
-const categories: Categories = {
-  '/': '',
-  '/movies': 'movie',
-  '/tv-series': 'tv',
-  '/bookmark': 'bookmark'
-};
-
-type CategoriesReversed = {
   [key: string]: string
   '': string
   'movie': string
@@ -51,7 +15,7 @@ type CategoriesReversed = {
   'bookmark': string
 };
 
-const categoriesReversed: CategoriesReversed = {
+const categories: Categories = {
   '': '/',
   'movie': '/movies',
   'tv': '/tv-series',
@@ -60,52 +24,33 @@ const categoriesReversed: CategoriesReversed = {
 
 type LocationPath = '/' | '/bookmark' | '/movies' | '/search' | '/tv-series' | '/show-details';
 
+const colours = {
+  white: '#fff',
+  blue: '#5A698F',
+  red: '#FC4747'
+};
+
 function RootLayout() {
-  const searchRef = {
-    query: useRef(''),
-    category: useRef('')
-  };
-  const navigate = useNavigate();
   const location = useRouterState({ select: (s) => s.location });
   const previousLocation = useRef<LocationPath>('/');
 
   if (location.pathname == '/search') {
     const searchParams = { ...location.search };
 
-    searchRef.query.current = searchParams.query as string;
-
     if (!searchParams.category) {
-      searchRef.category.current = '';
       previousLocation.current = '/';
     }
 
-    searchRef.category.current = searchParams.category as string;
-    previousLocation.current = categoriesReversed[searchParams.category as string] as LocationPath;
+    previousLocation.current = categories[searchParams.category as string] as LocationPath;
   }
   else if (location.pathname.includes('/show-details')) {
     const path = location.pathname.split('/')[2];
 
-    searchRef.category.current = path;
-    previousLocation.current = categoriesReversed[path] as LocationPath;
+    previousLocation.current = categories[path] as LocationPath;
   }
   else {
-    searchRef.category.current = categories[location.pathname as string];
     previousLocation.current = location.pathname as LocationPath;
   }
-
-  const searchPlaceHolder = searchPlaceHolderText[previousLocation.current];
-
-  const handleSearch = (searchInput: string) => {
-    searchRef.query.current = searchInput;
-    navigate({
-      from: '/search',
-      search: {
-        query: searchRef.query.current,
-        category: searchRef.category.current,
-        isBookmarked: previousLocation.current == '/bookmark'
-      }
-    });
-  };
 
   return (
     <>
@@ -180,25 +125,9 @@ function RootLayout() {
             </Link> */}
           </li>
         </ol>
-        <div className='profile-image-container'>
-          <img src={ Avatar } alt='profile image' className='profile-image' />
-        </div>
+        <Profile Avatar={ Avatar }/>
       </nav>
       <div className="page-wrapper">
-        <Link
-          to='/search'
-          search={{
-            query: searchRef.query.current,
-            category: searchRef.category.current,
-            isBookmarked: previousLocation.current == '/bookmark'
-          }}
-        >
-          <Search
-            search={ searchRef.query.current }
-            onSearch={ handleSearch }
-            placeHolderText={ searchPlaceHolder }
-          />
-        </Link>
         <Outlet />
       </div>
       <TanStackRouterDevtools />
