@@ -5,6 +5,7 @@ import API from '@/api/api';
 import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/card';
 
+import { SearchPlaceHolder } from '@/components/search';
 import type { PageNavigationSymbols } from '@/components/pagination/Pagination.types';
 import { Pagination, handlePageChange } from '@/components/pagination';
 
@@ -52,6 +53,8 @@ function RouteComponent() {
   };
 
   return (
+    <>
+    <SearchPlaceHolder placeHolderText='Search for TV series' category='tv' />
     <section className='tv-series-wrapper'>
       <h2>TV Series</h2>
       <section className="tv-series">
@@ -85,5 +88,6 @@ function RouteComponent() {
         onPageChange={ navigateTo }
       />
     </section>
+    </>
   );
 }

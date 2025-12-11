@@ -1,8 +1,10 @@
-import { createFileRoute, useLoaderData, useSearch, Link } from '@tanstack/react-router';
+import { createFileRoute, useLoaderData, useSearch, Link, useNavigate } from '@tanstack/react-router';
+import { useRef } from 'react';
 
 import API from '@/api/api';
 import type { Show } from '@/api/types';
 
+import { Search } from '@/components/search';
 import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/card';
 
@@ -10,18 +12,32 @@ const sortContent = (a: Show, b: Show) => b.popularity - a.popularity;
 
 type SearchCategory = 'movie' | 'tv';
 
+type SearchPlaceHolderText = {
+  [key: string]: string
+  '': string
+  'movie': string
+  'tv': string
+  'bookmark': string
+};
+
+const searchPlaceHolderText: SearchPlaceHolderText = {
+  '': 'Search for movies or TV series',
+  'movie': 'Search for movies',
+  'tv': 'Search for TV series',
+  'bookmark': 'Search for bookmarked shows'
+};
+
 export const Route = createFileRoute('/search')({
   component: RouteComponent,
   validateSearch: (search: { query: string, category?: SearchCategory, isBookmarked: boolean }) => {
     return {
-      query: (search.query) ?? '',
+      query: (search.query.trim()) ?? '',
       category: (search.category) ?? '',
       isBookmarked: (search.isBookmarked) ?? false
     }
   },
   loaderDeps: ({ search: { query, category, isBookmarked }}) => ({ query, category, isBookmarked }),
   loader: async ({ deps: { query, category }}) => {
-    query = query.trim();
 
     if (!query) {
       if (!category) {
@@ -46,7 +62,7 @@ export const Route = createFileRoute('/search')({
     }
 
     if (query) {
-      if (!category) {
+      if (!category || category == 'home') {
         const [movieSearch, tvSearch] = await Promise.all([
           API.getSearch('movie', query, 1),
           API.getSearch('tv', query, 1)
@@ -92,54 +108,87 @@ type SearchResultData = {
 };
 
 function RouteComponent() {
-  const { query } = useSearch({ from: '/search' });
+  const { query, category } = useSearch({ from: '/search' });
   const { searchResult } = useLoaderData({ from: '/search' }) as SearchResultData;
+  const navigate = useNavigate();
+  const searchRef = {
+    query: useRef(query ?? ''),
+    category: useRef(category ?? '')
+  };
+
+  const handleSearch = (searchInput: string) => {
+    searchRef.query.current = searchInput;
+    navigate({
+      from: '/search',
+      search: {
+        query: searchRef.query.current,
+        category: searchRef.category.current,
+        isBookmarked: searchRef.category.current == 'bookmark'
+      }
+    });
+  };
 
   return (
-    <section className='search-wrapper'>
-      {
-        !query && (
-          <h2>Waiting for search...</h2>
-        )
-      }
-      {
-        query && (
-          searchResult.length == 0 && <h2>No results found for '{ query }'</h2>
-        )
-      }
-      {
-        query && (
-          searchResult.length > 0 && (
-            searchResult.length == 1
-            ? <h2>{ searchResult.length } result found for '{ query }'</h2>
-            : <h2>Found { searchResult.length } results for '{ query }'</h2>
-          )
-        )
-      }
-      <section className="search-results">
+    <>
+      <Link
+        to='/search'
+        search={{
+          query: searchRef.query.current,
+          category: searchRef.category.current,
+          isBookmarked: searchRef.category.current == 'bookmark'
+        }}
+      >
+        <Search
+          search={ searchRef.query.current }
+          onSearch={ handleSearch }
+          placeHolderText={ searchPlaceHolderText[searchRef.category.current] }
+        />
+      </Link>
+      <section className='search-wrapper'>
         {
-          searchResult?.map((item: Show, index: number) => {
-            return (
-              <Link
-                key={ index }
-                to='/show-details/$type/$id'
-                params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
-                children={
-                  <Card
-                    type='secondary'
-                    title={ item.title }
-                    name={ item.name }
-                    release_date={ item.release_date }
-                    first_air_date={ item.first_air_date }
-                    poster_path={ item.poster_path }
-                    vote_average={ item.vote_average }
-                  />
-                }
-              />
-            );
-          })
+          !query && (
+            <h2>Waiting for search...</h2>
+          )
         }
+        {
+          query && (
+            searchResult.length == 0 && <h2>No results found for '{ query }'</h2>
+          )
+        }
+        {
+          query && (
+            searchResult.length > 0 && (
+              searchResult.length == 1
+              ? <h2>{ searchResult.length } result found for '{ query }'</h2>
+              : <h2>Found { searchResult.length } results for '{ query }'</h2>
+            )
+          )
+        }
+        <section className="search-results">
+          {
+            searchResult?.map((item: Show, index: number) => {
+              return (
+                <Link
+                  key={ index }
+                  to='/show-details/$type/$id'
+                  params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
+                  children={
+                    <Card
+                      type='secondary'
+                      title={ item.title }
+                      name={ item.name }
+                      release_date={ item.release_date }
+                      first_air_date={ item.first_air_date }
+                      poster_path={ item.poster_path }
+                      vote_average={ item.vote_average }
+                    />
+                  }
+                />
+              );
+            })
+          }
+        </section>
       </section>
-    </section>
+    </>
   );
 };

@@ -7,6 +7,7 @@ import API from '@/api/api';
 import { LoadSpinner } from '@/components/load-spinner';
 import { Card } from '@/components/card';
 
+import { SearchPlaceHolder } from '@/components/search';
 import type { PageNavigationSymbols } from '@/components/pagination/Pagination.types';
 import { Pagination, handlePageChange } from '@/components/pagination';
 
@@ -73,24 +74,54 @@ function RouteComponent() {
   };
 
   return (
-    <section className='home-content'>
-      <section className='trending-wrapper'>
-        <h2>Trending</h2>
-        <ScrollContainer
-          className="scroll-container trending-media-wrapper"
-        >
-          <section className='trending'>
+    <>
+      <SearchPlaceHolder placeHolderText='Search for movies and TV series' category='' />
+      <section className='home-content'>
+        <section className='trending-wrapper'>
+          <h2>Trending</h2>
+          <ScrollContainer
+            className='scroll-container trending-media-wrapper'
+          >
+            <section className='trending'>
+              {
+                trendingMedia?.map((item: Show, index: number) => {
+                  return (
+                    <Link
+                      key={ index}
+                      to='/show-details/$type/$id'
+                      params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
+                      children={
+                        <Card
+                          type='primary'
+                          media_type={ item.media_type }
+                          title={ item.title }
+                          name={ item.name }
+                          release_date={ item.release_date }
+                          first_air_date={ item.first_air_date }
+                          poster_path={ item.poster_path }
+                          vote_average={ item.vote_average }
+                        />
+                      }
+                    />
+                  );
+                })
+              }
+            </section>
+          </ScrollContainer>
+        </section>
+        <section className='recommended-wrapper'>
+          <h2>Recommended for you</h2>
+          <section className='recommended'>
             {
-              trendingMedia?.map((item: Show, index: number) => {
+              recommended?.map((item: Show, index: number) => {
                 return (
                   <Link
-                    key={ index}
+                    key={ index }
                     to='/show-details/$type/$id'
                     params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
                     children={
                       <Card
-                        type='primary'
-                        media_type={ item.media_type }
+                        type='secondary'
                         title={ item.title }
                         name={ item.name }
                         release_date={ item.release_date }
@@ -104,41 +135,14 @@ function RouteComponent() {
               })
             }
           </section>
-        </ScrollContainer>
-      </section>
-      <section className='recommended-wrapper'>
-        <h2>Recommended for you</h2>
-        <section className='recommended'>
-          {
-            recommended?.map((item: Show, index: number) => {
-              return (
-                <Link
-                  key={ index }
-                  to='/show-details/$type/$id'
-                  params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
-                  children={
-                    <Card
-                      type='secondary'
-                      title={ item.title }
-                      name={ item.name }
-                      release_date={ item.release_date }
-                      first_air_date={ item.first_air_date }
-                      poster_path={ item.poster_path }
-                      vote_average={ item.vote_average }
-                    />
-                  }
-                />
-              );
-            })
-          }
         </section>
+        <Pagination
+          totalPages={ totalPages }
+          page={ page }
+          siblings={ 1 }
+          onPageChange={ navigateTo }
+        />
       </section>
-      <Pagination
-        totalPages={ totalPages }
-        page={ page }
-        siblings={ 1 }
-        onPageChange={ navigateTo }
-      />
-    </section>
+    </>
   );
 };
