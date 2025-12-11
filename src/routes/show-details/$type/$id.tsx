@@ -120,7 +120,13 @@ function RouteComponent() {
 
   const handleModalDetails = (title: string, iframeSrc: string) => {
     setModalDetails({ title, iframeSrc });
+    handleModalOpen();
+  };
+  const handleModalOpen = () => {
     setModalState(true);
+  };
+  const handleModalClose = () => {
+    setModalState(false);
   };
 
   return (
@@ -211,7 +217,7 @@ function RouteComponent() {
           title={ modalDetails.title }
           iframeSrc={ modalDetails.iframeSrc }
           isActive={ modalState }
-          closeButton={ <button onClick={ () => { setModalState(false) } }>&#10005;</button> }
+          closeModal={ handleModalClose }
         />
       }
     </>
