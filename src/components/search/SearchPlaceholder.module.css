@@ -1,0 +1,31 @@
+.search-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  margin: 0px 15px;
+}
+
+.search-placeholder-text {
+  font-size: 13px;
+  color: #848383;
+}
+
+@media screen and (min-width: 768px) {
+  .search-placeholder {
+    margin: 0px 20px;
+  }
+
+  .search-placeholder-text {
+    font-size: 20px;
+  }
+}
+
+@media screen and (min-width: 1120px) {
+  .search-placeholder {
+    margin: 0px 30px;
+  }
+
+  .search-placeholder-text {
+    font-size: 32px;
+  }
+}
