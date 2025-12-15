@@ -266,6 +266,67 @@ a {
 
 /** END Details Page */
 
+/** Authentication Page **/
+.authentication-container {
+  margin: 0 15px;
+  height: 90dvh;
+  margin-top: 30px;
+}
+
+.authentication-wrapper {
+  padding: 20px 0px;
+  border-radius: 8px;
+  background-color: var(--blue-900);
+
+  h2 {
+    margin-bottom: 20px;
+  }
+}
+
+.authentication-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 0px 15px;
+  margin-bottom: 20px;
+
+  .form-input {
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    border-bottom: 1.6px solid var(--blue-500);
+    border-radius: 4px;
+  }
+
+  button {
+    margin-top: 20px;
+    background-color: var(--red);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+  }
+}
+
+.authentication-actions-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin: 0px 15px;
+
+  p {
+    font-weight: 100;
+  }
+
+  button {
+    background-color: transparent;
+    border: none;
+    color: #FC4747;
+  }
+}
+
+/** END Authentication Page **/
+
 @media screen and (min-width: 375px) {
 
   .recommended-wrapper .recommended,
