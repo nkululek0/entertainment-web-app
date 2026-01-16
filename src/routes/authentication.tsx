@@ -2,6 +2,8 @@ import { useState, useRef } from 'react';
 
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
+import { toast } from 'react-toastify';
+
 import { login, signUp } from '@/lib/supabase-client.ts';
 
 import { LoadSpinner } from '@/components/load-spinner';
@@ -30,15 +32,16 @@ function RouteComponent() {
     setIsLoading(true);
 
     const { data, error } = await login(loginInputs.email.current?.value ?? '', loginInputs.password.current?.value ?? '');
+    setIsLoading(false);
 
     if (error) {
-      alert('Error logging in: ' + error.message);
-      setIsLoading(false);
+      toast.error('Error logging in: ' + error.message);
       return;
     }
 
-    setIsLoading(false);
     console.log(data);
+    toast.success('Logged in successfully');
+    navigate({ to: '/', search: { page: 1 } });
   };
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -47,22 +50,21 @@ function RouteComponent() {
     setIsLoading(true);
 
     if (signupInputs.password.current?.value !== signupInputs.repeatPassword.current?.value) {
-      alert('Passwords do not match');
+      toast.error('Error signing up: Passwords do not match');
       setIsLoading(false);
       return;
     }
 
     const { error } = await signUp(signupInputs.email.current?.value ?? '', signupInputs.password.current?.value ?? '');
+    setIsLoading(false);
 
     if (error) {
-      alert('Error signing up: ' + error.message);
-      setIsLoading(false);
+      toast.error(`Error signing up: ${ error.message }`);
       return;
     }
 
-    // alert(`Check your email (${ signupInputs.email.current?.value }) to verify your account`);
-    setIsLoading(false);
-    setTimeout(() => navigate({ to: '/authentication' }), 4500);
+    toast.success('Signed up successfully, please check your email to verify your account');
+    setAuthenticationType('login');
   };
 
   return (

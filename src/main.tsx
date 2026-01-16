@@ -8,6 +8,8 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
 
+import { ToastContainer } from 'react-toastify';
+
 // Create a new router instance
 const router = createRouter({ routeTree });
 
@@ -25,6 +27,13 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <RouterProvider router={router} />
+      <ToastContainer
+        position="top-right"
+        theme="light"
+        autoClose={5000}
+        draggable={false}
+        closeOnClick={false}
+      />
     </StrictMode>,
   )
 };
