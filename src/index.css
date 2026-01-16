@@ -299,11 +299,14 @@ a {
   }
 
   button {
+    display: flex;
+    justify-content: center;
     margin-top: 20px;
     background-color: var(--red);
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
+    cursor: pointer;
   }
 }
 
@@ -322,6 +325,7 @@ a {
     background-color: transparent;
     border: none;
     color: #FC4747;
+    cursor: pointer;
   }
 }
 

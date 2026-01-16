@@ -4,6 +4,8 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
 import { login, signUp } from '@/lib/supabase-client.ts';
 
+import { LoadSpinner } from '@/components/load-spinner';
+
 export const Route = createFileRoute('/authentication')({
   component: RouteComponent,
 });
@@ -11,6 +13,7 @@ export const Route = createFileRoute('/authentication')({
 function RouteComponent() {
   const navigate = useNavigate();
   const [authenticationType, setAuthenticationType] = useState<'login' | 'signup'>('login');
+  const [isLoading, setIsLoading] = useState(false);
   const loginInputs = {
     email: useRef<HTMLInputElement>(null),
     password: useRef<HTMLInputElement>(null)
@@ -24,21 +27,28 @@ function RouteComponent() {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    setIsLoading(true);
+
     const { data, error } = await login(loginInputs.email.current?.value ?? '', loginInputs.password.current?.value ?? '');
 
     if (error) {
       alert('Error logging in: ' + error.message);
+      setIsLoading(false);
       return;
     }
 
+    setIsLoading(false);
     console.log(data);
   };
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    setIsLoading(true);
+
     if (signupInputs.password.current?.value !== signupInputs.repeatPassword.current?.value) {
       alert('Passwords do not match');
+      setIsLoading(false);
       return;
     }
 
@@ -46,10 +56,12 @@ function RouteComponent() {
 
     if (error) {
       alert('Error signing up: ' + error.message);
+      setIsLoading(false);
       return;
     }
 
     // alert(`Check your email (${ signupInputs.email.current?.value }) to verify your account`);
+    setIsLoading(false);
     setTimeout(() => navigate({ to: '/authentication' }), 4500);
   };
 
@@ -67,6 +79,7 @@ function RouteComponent() {
               className='form-input'
               placeholder='Email address'
               defaultValue={ loginInputs.email.current?.value }
+              required
             />
             <input
               ref={ loginInputs.password }
@@ -74,8 +87,13 @@ function RouteComponent() {
               className='form-input'
               placeholder='Password'
               defaultValue={ loginInputs.password.current?.value }
+              required
             />
-            <button type='submit'>Login to your account</button>
+            <button type='submit'>
+              {
+                isLoading ? <LoadSpinner width={ 16 } height={ 16 } /> : 'Login to your account'
+              }
+            </button>
           </form>
           <div className='authentication-actions-container'>
             <p>Don't have an account?</p>
@@ -94,6 +112,7 @@ function RouteComponent() {
               className='form-input'
               placeholder='Email address'
               defaultValue={ signupInputs.email.current?.value }
+              required
             />
             <input
               ref={ signupInputs.password }
@@ -101,6 +120,7 @@ function RouteComponent() {
               className='form-input'
               placeholder='Password'
               defaultValue={ signupInputs.password.current?.value }
+              required
             />
             <input
               ref={ signupInputs.repeatPassword }
@@ -108,8 +128,13 @@ function RouteComponent() {
               className='form-input'
               placeholder='Repeat password'
               defaultValue={ signupInputs.repeatPassword.current?.value }
+              required
             />
-            <button type='submit'>Create an account</button>
+            <button type='submit'>
+              {
+                isLoading ? <LoadSpinner width={ 16 } height={ 16 } /> : 'Create an account'
+              }
+            </button>
           </form>
           <div className='authentication-actions-container'>
             <p>Already have an account?</p>
