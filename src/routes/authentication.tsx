@@ -2,23 +2,11 @@ import { useState, useRef } from 'react';
 
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
-import supabase from '@/lib/supabase-client.ts';
+import { login, signUp } from '@/lib/supabase-client.ts';
 
 export const Route = createFileRoute('/authentication')({
   component: RouteComponent,
 });
-
-const getURL = () => {
-  let url =
-    import.meta.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
-    import.meta.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
-    'http://localhost:5173/';
-  // Make sure to include `https://` when not localhost.
-  url = url.startsWith('http') ? url : `https://${url}`;
-  // Make sure to include a trailing `/`.
-  url = url.endsWith('/') ? url : `${url}/`;
-  return url;
-};
 
 function RouteComponent() {
   const navigate = useNavigate();
@@ -33,9 +21,17 @@ function RouteComponent() {
     repeatPassword: useRef<HTMLInputElement>(null)
   };
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(loginInputs.email.current?.value);
+
+    const { data, error } = await login(loginInputs.email.current?.value ?? '', loginInputs.password.current?.value ?? '');
+
+    if (error) {
+      alert('Error logging in: ' + error.message);
+      return;
+    }
+
+    console.log(data);
   };
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -46,16 +42,10 @@ function RouteComponent() {
       return;
     }
 
-    const { error: signUpError } = await supabase.auth.signUp({
-      email: signupInputs.email.current?.value ?? '',
-      password: signupInputs.password.current?.value ?? '',
-      options: {
-        emailRedirectTo: `${ getURL() }authentication`
-      }
-    });
+    const { error } = await signUp(signupInputs.email.current?.value ?? '', signupInputs.password.current?.value ?? '');
 
-    if (signUpError) {
-      alert('Error signing up: ' + signUpError.message);
+    if (error) {
+      alert('Error signing up: ' + error.message);
       return;
     }
 
