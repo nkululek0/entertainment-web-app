@@ -268,6 +268,8 @@ a {
 
 /** Authentication Page **/
 .authentication-container {
+  display: flex;
+  justify-content: center;
   margin: 0 15px;
   height: 90dvh;
   margin-top: 30px;
@@ -277,9 +279,13 @@ a {
   padding: 20px 0px;
   border-radius: 8px;
   background-color: var(--blue-900);
+  max-width: 400px;
+  width: 100%;
+  height: max-content;
 
   h2 {
-    margin-bottom: 20px;
+    margin: 0px 25px !important;
+    margin-bottom: 20px !important;
   }
 }
 
