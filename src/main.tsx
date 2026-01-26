@@ -9,7 +9,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 
 import { ToastContainer } from 'react-toastify';
-
+import { ProfileProvider } from '@/stores/profile';
 // Create a new router instance
 const router = createRouter({ routeTree });
 
@@ -26,7 +26,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <ProfileProvider>
+        <RouterProvider router={router} />
+      </ProfileProvider>
       <ToastContainer
         position="top-right"
         theme="light"
