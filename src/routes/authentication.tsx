@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { login, signUp } from '@/lib/supabase-client.ts';
 
 import { LoadSpinner } from '@/components/load-spinner';
+import { useProfile } from '@/stores/profile';
 
 export const Route = createFileRoute('/authentication')({
   component: RouteComponent,
@@ -25,21 +26,32 @@ function RouteComponent() {
     password: useRef<HTMLInputElement>(null),
     repeatPassword: useRef<HTMLInputElement>(null)
   };
+  const { setProfile } = useProfile();
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsLoading(true);
 
-    const { data, error } = await login(loginInputs.email.current?.value ?? '', loginInputs.password.current?.value ?? '');
+    const loginData = await login(loginInputs.email.current?.value ?? '', loginInputs.password.current?.value ?? '');
     setIsLoading(false);
+
+    if (!loginData) throw new Error('Error logging in');
+
+    const { error, data } = loginData;
 
     if (error) {
       toast.error('Error logging in: ' + error.message);
       return;
     }
 
-    console.log(data);
+    setProfile((previousValues) => {
+      const result = { ...previousValues };
+
+      result.username = data.user?.email as string;
+
+      return result;
+    });
     toast.success('Logged in successfully');
     navigate({ to: '/', search: { page: 1 } });
   };
