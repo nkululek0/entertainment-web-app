@@ -92,3 +92,12 @@ export const ShowVideoSchema = z.object({
 });
 
 export type ShowVideo = z.infer<typeof ShowVideoSchema>;
+
+// Profile related
+export const ProfileSchema = z.object({
+  user: z.object({
+    email: z.string()
+  })
+});
+
+export type Profile = z.infer<typeof ProfileSchema>;

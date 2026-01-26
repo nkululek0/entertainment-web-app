@@ -5,13 +5,20 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+import { type Profile, ProfileSchema } from '@/api/types';
+
 export const login = async (email: string, password: string) => {
   const { error, data } = await supabase.auth.signInWithPassword({
     email: email,
     password: password,
   });
 
-  return { error, data };
+  data as unknown as Profile;
+  const profileData = ProfileSchema.safeParse(data);
+
+  if (profileData.success) {
+    return { error: error, data: profileData.data };
+  }
 };
 
 export const signUp = async (email: string, password: string) => {
