@@ -31,7 +31,7 @@ export const Route = createFileRoute('/search')({
   component: RouteComponent,
   validateSearch: (search: { query: string, category?: SearchCategory, isBookmarked: boolean }) => {
     return {
-      query: (search.query.trim()) ?? '',
+      query: (search.query?.trim()) ?? '',
       category: (search.category) ?? '',
       isBookmarked: (search.isBookmarked) ?? false
     }
