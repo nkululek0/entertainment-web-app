@@ -5,9 +5,9 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { toast } from 'react-toastify';
 
 import { login, signUp } from '@/lib/supabase-client.ts';
+import { useProfile } from '@/stores/profile';
 
 import { LoadSpinner } from '@/components/load-spinner';
-import { useProfile } from '@/stores/profile';
 
 export const Route = createFileRoute('/authentication')({
   component: RouteComponent,
@@ -26,7 +26,7 @@ function RouteComponent() {
     password: useRef<HTMLInputElement>(null),
     repeatPassword: useRef<HTMLInputElement>(null)
   };
-  const { setProfile } = useProfile();
+  const { setIsLoggedIn } = useProfile();
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,19 +38,16 @@ function RouteComponent() {
 
     if (!loginData) throw new Error('Error logging in');
 
-    const { error, data } = loginData;
+    const { error } = loginData;
 
     if (error) {
       toast.error('Error logging in: ' + error.message);
       return;
     }
 
-    setProfile((previousValues) => {
-      const result = { ...previousValues };
-
-      result.username = data.user?.email as string;
-
-      return result;
+    setIsLoggedIn((prev) => {
+      console.log(prev);
+      return true
     });
     toast.success('Logged in successfully');
     navigate({ to: '/', search: { page: 1 } });
