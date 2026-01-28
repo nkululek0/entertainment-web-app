@@ -7,20 +7,6 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 import { type Profile, ProfileSchema } from '@/api/types';
 
-export const login = async (email: string, password: string) => {
-  const { error, data } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password,
-  });
-
-  data as unknown as Profile;
-  const profileData = ProfileSchema.safeParse(data);
-
-  if (profileData.success) {
-    return { error: error, data: profileData.data };
-  }
-};
-
 export const signUp = async (email: string, password: string) => {
   const { error } = await supabase.auth.signUp({
     email: email,
@@ -31,6 +17,34 @@ export const signUp = async (email: string, password: string) => {
   });
 
   return { error };
+};
+
+export const login = async (email: string, password: string) => {
+  const { error, data } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
+
+  if (error) return { error };
+
+  data as unknown as Profile;
+  const profileData = ProfileSchema.safeParse(data);
+
+  if (profileData.success) {
+    return { data: profileData.data };
+  }
+};
+
+export const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+
+  return { error };
+};
+
+export const getSession = async () => {
+  const { data, error } = await supabase.auth.getSession();
+
+  return { data, error };
 };
 
 const getURL = () => {
