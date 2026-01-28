@@ -8,14 +8,18 @@ type ProfileProps = {
   Avatar: string
 };
 
+type Profile = {
+  username: string
+};
+
 export function Profile(props: ProfileProps) {
   const { Avatar } = props;
-  const { profile } = useProfile();
+  const { profile, isLoggedIn } = useProfile();
 
   return (
     <>
       {
-        profile.username &&
+        isLoggedIn && profile.username &&
           <Link
             to='/profile/$username'
             params={{ username: profile.username }}
@@ -29,7 +33,7 @@ export function Profile(props: ProfileProps) {
           </Link>
       }
       {
-        !profile.username &&
+        !isLoggedIn && !profile.username &&
           <Link to='/authentication' className={ style['profile-image-container'] }>
             <img
               src={ Avatar }

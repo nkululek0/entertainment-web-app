@@ -10,6 +10,7 @@ import { routeTree } from './routeTree.gen';
 
 import { ToastContainer } from 'react-toastify';
 import { ProfileProvider } from '@/stores/profile';
+
 // Create a new router instance
 const router = createRouter({ routeTree });
 
