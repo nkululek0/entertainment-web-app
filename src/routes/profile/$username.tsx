@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useLoaderData, useNavigate, useParams } from '@tanstack/react-router'
 
 import { toast } from 'react-toastify';
 import { logout } from '@/lib/supabase-client';
@@ -12,8 +12,10 @@ export const Route = createFileRoute('/profile/$username')({
   component: RouteComponent,
   loader: async ({ params }) => {
     return {
-      username: params.username
-    }
+      firstName: 'Nkululeko',
+      lastName: 'Zikode',
+      image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
+    };
   },
   pendingComponent: () => {
     return (
@@ -29,20 +31,21 @@ export const Route = createFileRoute('/profile/$username')({
       </div>
     );
   }
-})
+});
 
 function RouteComponent() {
-  const { username } = useLoaderData({ from: '/profile/$username' });
-  const [isLoading, setIsLoading] = useState(false);
+  const { username } = useParams({ from: '/profile/$username' });
+  const { firstName, lastName, image } = useLoaderData({ from: '/profile/$username' });
+  const [isSignOutLoading, setIsSignOutLoading] = useState(false);
   const { setIsLoggedIn } = useProfile();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    setIsLoading(true);
+    setIsSignOutLoading(true);
 
     const { error } = await logout();
 
-    setIsLoading(false);
+    setIsSignOutLoading(false);
 
     if (error) {
       toast.error('Error logging out: ' + error.message);
@@ -59,10 +62,41 @@ function RouteComponent() {
 
   return (
     <>
-      <h1>Profile: { username }</h1>
-      <button onClick={ handleLogout }>
-        { isLoading ? <LoadSpinner width={ 16 } height={ 16 } /> : 'Sign out' }
-      </button>
+      <section className='profile-details-wrapper'>
+        <section className='details-summary'>
+          <div className='profile'>
+            <img src={ image } alt='' className='profile-image' />
+            <div className='profile-details'>
+              <div className='fullname'>
+                <h3>{ firstName } { lastName }</h3>
+              </div>
+              <p className='username'>{ username }</p>
+            </div>
+          </div>
+          <button className="logout-button" onClick={ handleLogout }>
+            { isSignOutLoading ? <LoadSpinner /> : 'Logout' }
+          </button>
+        </section>
+        <form className="details">
+          <div className="fullname-wrapper">
+            <p className="heading">Full Name</p>
+            <div className="inputs-container">
+              <input type="text" className="input" placeholder="First Name" />
+              <input type="text" className="input" placeholder="Last Name" />
+            </div>
+          </div>
+          <div className="password-wrapper">
+            <p className="heading">Password</p>
+            <div className="inputs-container">
+              <input type="password" className="input" placeholder="Password" />
+              <input type="password" className="input" placeholder="Confirm Password" />
+            </div>
+          </div>
+          <div className="actions-wrapper">
+            <button type='submit'>Save</button>
+          </div>
+        </form>
+      </section>
     </>
   );
 }
