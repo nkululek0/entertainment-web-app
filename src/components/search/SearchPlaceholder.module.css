@@ -23,6 +23,7 @@
 @media screen and (min-width: 1120px) {
   .search-placeholder {
     margin: 0px 30px;
+    margin-top: 20px;
   }
 
   .search-placeholder-text {

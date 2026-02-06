@@ -144,7 +144,7 @@ function RouteComponent() {
             </div>
           </div>
           <button className='logout-button' onClick={ handleLogout }>
-            { isSignOutLoading ? <LoadSpinner /> : 'Logout' }
+            { isSignOutLoading ? <LoadSpinner width={ 16 } height={ 16 } /> : 'Logout' }
           </button>
         </section>
         <form className='details' onSubmit={ handleUserProfileUpdate }>
@@ -186,7 +186,7 @@ function RouteComponent() {
           </div>
           <div className='actions-wrapper'>
             <button type='submit'>
-              { isUserProfileUpdateLoading ? <LoadSpinner /> : 'Update' }
+              { isUserProfileUpdateLoading ? <LoadSpinner width={ 16 } height={ 16 } /> : 'Update' }
             </button>
           </div>
         </form>

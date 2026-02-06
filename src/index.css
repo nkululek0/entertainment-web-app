@@ -350,6 +350,53 @@ a {
     border-radius: 50%;
   }
 
+  .details-summary {
+    background-color: var(--blue-900);
+    padding: 15px;
+  }
+
+  .profile {
+    display: flex;
+    margin-bottom: 15px;
+  }
+
+  .profile-image {
+    margin-right: 1rem;
+  }
+
+  .fullname-wrapper {
+    margin-bottom: 30px;
+  }
+
+  .details {
+    margin: 0 15px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+
+    .heading {
+      margin-bottom: 5px;
+    }
+  }
+
+  .inputs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .input {
+    font-size: 16px;
+    color: var(--black);
+    border: none;
+    border-radius: 4px;
+    padding: 5px;
+  }
+
+  .password-wrapper {
+    margin-bottom: 20px;
+  }
+
   .logout-button,
   .actions-wrapper button {
     background-color: var(--red);
@@ -357,11 +404,11 @@ a {
     padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
+    width: max-content;
   }
 
-  .input {
-    font-size: 16px;
-    color: var(--black);
+  .logout-button {
+    width: 100%;
   }
 }
 
@@ -492,6 +539,40 @@ a {
     width: 400px;
   }
   /** END Details Page **/
+
+  /** User Profile Page **/
+  .profile-details-wrapper {
+    .details-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px;
+      margin: 0 25px;
+    }
+
+    .profile {
+      margin-bottom: 0px;
+    }
+
+    .details {
+      margin: 0 25px;
+      margin-top: 40px;
+    }
+
+    .inputs-container {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .input {
+      width: 49%;
+    }
+
+    .logout-button {
+      width: max-content;
+    }
+  }
+  /** END User Profile Page **/
 }
 
 @media screen and (min-width: 1120px) {
@@ -607,6 +688,23 @@ a {
     margin-top: 10px;
   }
   /** END Details Page **/
+
+  /** User Profile Page **/
+  .profile-details-wrapper {
+    .details-summary {
+      padding: 30px;
+    }
+  }
+  /** END User Profile Page **/
+}
+
+@media screen and (max-width: 1120px) {
+  /** User Profile Page **/
+  .profile-details-wrapper {
+    height: 80dvh;
+    overflow-y: scroll;
+  }
+  /** END User Profile Page **/
 }
 
 @media screen and (min-width: 1331px) {
