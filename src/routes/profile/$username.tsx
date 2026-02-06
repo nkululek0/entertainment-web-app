@@ -1,9 +1,9 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { createFileRoute, useLoaderData, useNavigate, useParams } from '@tanstack/react-router'
 
 import { toast } from 'react-toastify';
-import { logout } from '@/lib/supabase-client';
+import { logout, getUserProfile, updateUserProfile } from '@/lib/supabase-client';
 
 import { useProfile } from '@/stores/profile';
 import { LoadSpinner } from '@/components/load-spinner';
@@ -11,10 +11,20 @@ import { LoadSpinner } from '@/components/load-spinner';
 export const Route = createFileRoute('/profile/$username')({
   component: RouteComponent,
   loader: async ({ params }) => {
+    const { error, data } = await getUserProfile(params.username || '');
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (!data) {
+      throw new Error('User profile not found');
+    }
+
     return {
-      firstName: 'Nkululeko',
-      lastName: 'Zikode',
-      image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
+      firstName: data.first_name,
+      lastName: data.last_name,
+      image: data.avatar
     };
   },
   pendingComponent: () => {
@@ -37,6 +47,13 @@ function RouteComponent() {
   const { username } = useParams({ from: '/profile/$username' });
   const { firstName, lastName, image } = useLoaderData({ from: '/profile/$username' });
   const [isSignOutLoading, setIsSignOutLoading] = useState(false);
+  const [isUserProfileUpdateLoading, setIsUserProfileUpdateLoading] = useState(false);
+  const profileInputs = {
+    firstName: useRef<HTMLInputElement>(null),
+    lastName: useRef<HTMLInputElement>(null),
+    password: useRef<HTMLInputElement>(null),
+    confirmPassword: useRef<HTMLInputElement>(null)
+  };
   const { setIsLoggedIn } = useProfile();
   const navigate = useNavigate();
 
@@ -49,15 +66,60 @@ function RouteComponent() {
 
     if (error) {
       toast.error('Error logging out: ' + error.message);
+      return;
     }
-    else {
-      setIsLoggedIn((prev) => {
-        console.log(prev)
-        return false
+
+    setIsLoggedIn(false);
+    toast.info('You have been Logged out');
+    navigate({ to: '/', search: { page: 1 } });
+  };
+
+  const handleUserProfileUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsUserProfileUpdateLoading(true);
+
+    const { errors: generalDetailsErrors, data: generalDetailsData } = await updateUserProfile('General', username, {
+      first_name: profileInputs.firstName.current?.value ?? '',
+      last_name: profileInputs.lastName.current?.value ?? '',
+    });
+
+    if (generalDetailsErrors.length > 0) {
+      generalDetailsErrors.forEach((error) => {
+        toast.error('Error updating user profile: ' + error);
+        setIsUserProfileUpdateLoading(false);
       });
-      toast.info('You have been Logged out');
-      navigate({ to: '/', search: { page: 1 } });
+      return;
     }
+    else if (generalDetailsData) {
+      toast.success(generalDetailsData.message);
+    }
+
+    if (profileInputs.password.current?.value !== profileInputs.confirmPassword.current?.value) {
+      toast.error('Error updating user profile: Passwords do not match');
+      setIsUserProfileUpdateLoading(false);
+      return;
+    }
+
+    const { errors: credentialErrors, data: credentialData } = await updateUserProfile('Credentials', username, {
+      password: profileInputs.password.current?.value ?? ''
+    });
+
+    if (credentialErrors.length > 0) {
+      credentialErrors.forEach((error) => {
+        toast.error('Error updating user profile: ' + error);
+        setIsUserProfileUpdateLoading(false);
+      });
+      return;
+    }
+    else if (credentialData) {
+      toast.success(credentialData.message);
+    }
+
+    setIsUserProfileUpdateLoading(false);
+    navigate({
+      from: '/profile/$username',
+      params: { username: username }
+    });
   };
 
   return (
@@ -65,7 +127,15 @@ function RouteComponent() {
       <section className='profile-details-wrapper'>
         <section className='details-summary'>
           <div className='profile'>
-            <img src={ image } alt='' className='profile-image' />
+            {
+              image && <img src={ image } alt='' className='profile-image' />
+            }
+            {
+              !image &&
+              <div className='profile-image'>
+                <h3>{ username.charAt(0).toUpperCase() }</h3>
+              </div>
+            }
             <div className='profile-details'>
               <div className='fullname'>
                 <h3>{ firstName } { lastName }</h3>
@@ -73,27 +143,51 @@ function RouteComponent() {
               <p className='username'>{ username }</p>
             </div>
           </div>
-          <button className="logout-button" onClick={ handleLogout }>
+          <button className='logout-button' onClick={ handleLogout }>
             { isSignOutLoading ? <LoadSpinner /> : 'Logout' }
           </button>
         </section>
-        <form className="details">
-          <div className="fullname-wrapper">
-            <p className="heading">Full Name</p>
-            <div className="inputs-container">
-              <input type="text" className="input" placeholder="First Name" />
-              <input type="text" className="input" placeholder="Last Name" />
+        <form className='details' onSubmit={ handleUserProfileUpdate }>
+          <div className='fullname-wrapper'>
+            <p className='heading'>Full Name</p>
+            <div className='inputs-container'>
+              <input
+                ref={ profileInputs.firstName }
+                type='text'
+                className='input'
+                placeholder='First Name'
+                defaultValue=''
+              />
+              <input
+                ref={ profileInputs.lastName }
+                type='text'
+                className='input'
+                placeholder='Last Name'
+                defaultValue=''
+              />
             </div>
           </div>
-          <div className="password-wrapper">
-            <p className="heading">Password</p>
-            <div className="inputs-container">
-              <input type="password" className="input" placeholder="Password" />
-              <input type="password" className="input" placeholder="Confirm Password" />
+          <div className='password-wrapper'>
+            <p className='heading'>Password</p>
+            <div className='inputs-container'>
+              <input
+                ref={ profileInputs.password }
+                type='password'
+                className='input'
+                placeholder='Password'
+              />
+              <input
+                ref={ profileInputs.confirmPassword }
+                type='password'
+                className='input'
+                placeholder='Confirm Password'
+              />
             </div>
           </div>
-          <div className="actions-wrapper">
-            <button type='submit'>Save</button>
+          <div className='actions-wrapper'>
+            <button type='submit'>
+              { isUserProfileUpdateLoading ? <LoadSpinner /> : 'Update' }
+            </button>
           </div>
         </form>
       </section>
