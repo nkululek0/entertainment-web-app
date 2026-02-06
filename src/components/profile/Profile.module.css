@@ -5,6 +5,12 @@
   border-radius: 50%;
 }
 
+.signed-in {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media screen and (min-width: 1120px) {
   .profile-image-container {
     flex-grow: 1;

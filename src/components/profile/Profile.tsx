@@ -3,17 +3,13 @@ import { Link } from '@tanstack/react-router';
 import { useProfile } from '@/stores/profile';
 
 import style from './Profile.module.css';
-
-type ProfileProps = {
-  Avatar: string
-};
+import Avatar from '@/assets/user-profile-account.png';
 
 type Profile = {
   username: string
 };
 
-export function Profile(props: ProfileProps) {
-  const { Avatar } = props;
+export function Profile() {
   const { profile, isLoggedIn } = useProfile();
 
   return (
@@ -25,11 +21,20 @@ export function Profile(props: ProfileProps) {
             params={{ username: profile.username }}
             className={ style['profile-image-container'] }
           >
-            <img
-              src={ Avatar }
-              alt='profile image'
-              className={ style['profile-image'] }
-            />
+            {
+              profile.avatar &&
+                <img
+                  src={ profile.avatar }
+                  alt='profile image'
+                  className={ style['profile-image'] }
+                />
+            }
+            {
+              !profile.avatar &&
+                <div className={ `${ style['profile-image'] } ${ style['signed-in'] }` }>
+                  <p>{ profile.username.charAt(0).toUpperCase() }</p>
+                </div>
+            }
           </Link>
       }
       {
