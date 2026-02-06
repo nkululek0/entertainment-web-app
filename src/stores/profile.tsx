@@ -2,12 +2,13 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 import { toast } from 'react-toastify';
 
-import { getSession } from '@/lib/supabase-client.ts';
+import { getSession, getUserProfile } from '@/lib/supabase-client.ts';
 import { LoadSpinner } from '@/components/load-spinner';
 
 
 type Profile = {
   username: string
+  avatar: string
 }
 type Context = {
   profile: Profile
@@ -18,7 +19,7 @@ type Context = {
 const ProfileContext = createContext<Context | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: React.ReactNode }) => {
-  const [profile, setProfile] = useState<Profile>({ username: '' });
+  const [profile, setProfile] = useState<Profile>({ username: '', avatar: '' });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,13 +33,14 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
       if (error) toast.error(`Error while getting session: ${ error.message }`)
 
       if (data.session) {
-        const user = data.session.user;
+        const { data: userProfileData } = await getUserProfile(data.session.user?.email || '');
+        const user = userProfileData;
 
-        setProfile({ username: user?.email as string });
+        setProfile({ username: user.username as string, avatar: user.avatar as string });
         setIsLoggedIn(true);
       }
       else {
-        setProfile({ username: '' });
+        setProfile({ username: '', avatar: '' });
         setIsLoggedIn(false);
       }
     };
