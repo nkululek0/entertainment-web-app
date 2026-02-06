@@ -1,8 +1,6 @@
 import { createRootRoute, Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
-import Avatar from '@/assets/image-avatar.png';
-
 import { Profile } from '@/components/profile';
 
 const colours = {
@@ -95,7 +93,7 @@ function RootLayout() {
             </Link> */}
           </li>
         </ol>
-        <Profile Avatar={ Avatar }/>
+        <Profile />
       </nav>
       <div className="page-wrapper">
         <Outlet />

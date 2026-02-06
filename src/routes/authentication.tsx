@@ -4,7 +4,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
 import { toast } from 'react-toastify';
 
-import { login, signUp } from '@/lib/supabase-client.ts';
+import { login, signUp, setUserProfile, getUserProfile } from '@/lib/supabase-client.ts';
 import { useProfile } from '@/stores/profile';
 
 import { LoadSpinner } from '@/components/load-spinner';
@@ -28,31 +28,6 @@ function RouteComponent() {
   };
   const { setIsLoggedIn } = useProfile();
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    setIsLoading(true);
-
-    const loginData = await login(loginInputs.email.current?.value ?? '', loginInputs.password.current?.value ?? '');
-    setIsLoading(false);
-
-    if (!loginData) throw new Error('Error logging in');
-
-    const { error } = loginData;
-
-    if (error) {
-      toast.error('Error logging in: ' + error.message);
-      return;
-    }
-
-    setIsLoggedIn((prev) => {
-      console.log(prev);
-      return true
-    });
-    toast.success('Logged in successfully');
-    navigate({ to: '/', search: { page: 1 } });
-  };
-
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -65,15 +40,51 @@ function RouteComponent() {
     }
 
     const { error } = await signUp(signupInputs.email.current?.value ?? '', signupInputs.password.current?.value ?? '');
-    setIsLoading(false);
 
     if (error) {
       toast.error(`Error signing up: ${ error.message }`);
+      setIsLoading(false);
       return;
     }
 
     toast.success('Signed up successfully, please check your email to verify your account');
+    setIsLoading(false);
     setAuthenticationType('login');
+  };
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setIsLoading(true);
+
+    const loginData = await login(loginInputs.email.current?.value ?? '', loginInputs.password.current?.value ?? '');
+
+    if (!loginData) throw new Error('Error logging in');
+
+    const { error } = loginData;
+
+    if (error) {
+      toast.error('Error logging in: ' + error.message);
+      setIsLoading(false);
+      return;
+    }
+
+    const { data } = await getUserProfile(loginData.data.user.email);
+
+    if (!data) {
+      const { error: userProfileError } = await setUserProfile(loginData.data.user.email);
+
+      if (userProfileError) {
+        toast.error('Error setting user profile: ' + userProfileError.message);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    setIsLoading(false);
+    setIsLoggedIn(true);
+    toast.success('Logged in successfully');
+    navigate({ to: '/', search: { page: 1 } });
   };
 
   return (
