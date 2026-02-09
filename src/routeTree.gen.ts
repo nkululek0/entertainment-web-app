@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TvSeriesRouteImport } from './routes/tv-series'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MoviesRouteImport } from './routes/movies'
 import { Route as BookmarkRouteImport } from './routes/bookmark'
 import { Route as AuthenticationRouteImport } from './routes/authentication'
@@ -26,6 +27,11 @@ const TvSeriesRoute = TvSeriesRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoviesRoute = MoviesRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/authentication': typeof AuthenticationRoute
   '/bookmark': typeof BookmarkRoute
   '/movies': typeof MoviesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/tv-series': typeof TvSeriesRoute
   '/profile/$username': typeof ProfileUsernameRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/authentication': typeof AuthenticationRoute
   '/bookmark': typeof BookmarkRoute
   '/movies': typeof MoviesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/tv-series': typeof TvSeriesRoute
   '/profile/$username': typeof ProfileUsernameRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/authentication': typeof AuthenticationRoute
   '/bookmark': typeof BookmarkRoute
   '/movies': typeof MoviesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/tv-series': typeof TvSeriesRoute
   '/profile/$username': typeof ProfileUsernameRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/authentication'
     | '/bookmark'
     | '/movies'
+    | '/reset-password'
     | '/search'
     | '/tv-series'
     | '/profile/$username'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/authentication'
     | '/bookmark'
     | '/movies'
+    | '/reset-password'
     | '/search'
     | '/tv-series'
     | '/profile/$username'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/authentication'
     | '/bookmark'
     | '/movies'
+    | '/reset-password'
     | '/search'
     | '/tv-series'
     | '/profile/$username'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AuthenticationRoute: typeof AuthenticationRoute
   BookmarkRoute: typeof BookmarkRoute
   MoviesRoute: typeof MoviesRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
   TvSeriesRoute: typeof TvSeriesRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/movies': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticationRoute: AuthenticationRoute,
   BookmarkRoute: BookmarkRoute,
   MoviesRoute: MoviesRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
   TvSeriesRoute: TvSeriesRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,

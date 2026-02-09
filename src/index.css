@@ -289,6 +289,7 @@ a {
   }
 }
 
+.form,
 .authentication-form {
   display: flex;
   flex-direction: column;
@@ -334,6 +335,19 @@ a {
     color: #FC4747;
     cursor: pointer;
   }
+}
+
+.additional-actions-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.forgot-password-button {
+  background-color: transparent;
+  border: none;
+  color: #FC4747;
+  cursor: pointer;
 }
 
 /** END Authentication Page **/

@@ -4,7 +4,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
 import { toast } from 'react-toastify';
 
-import { login, signUp, setUserProfile, getUserProfile } from '@/lib/supabase-client.ts';
+import { login, signUp, setUserProfile, getUserProfile, sendPasswordResetLink } from '@/lib/supabase-client.ts';
 import { useProfile } from '@/stores/profile';
 
 import { LoadSpinner } from '@/components/load-spinner';
@@ -15,7 +15,7 @@ export const Route = createFileRoute('/authentication')({
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const [authenticationType, setAuthenticationType] = useState<'login' | 'signup'>('login');
+  const [authenticationType, setAuthenticationType] = useState<'login' | 'signup' | 'forgot-password'>('login');
   const [isLoading, setIsLoading] = useState(false);
   const loginInputs = {
     email: useRef<HTMLInputElement>(null),
@@ -25,6 +25,9 @@ function RouteComponent() {
     email: useRef<HTMLInputElement>(null),
     password: useRef<HTMLInputElement>(null),
     repeatPassword: useRef<HTMLInputElement>(null)
+  };
+  const forgotPasswordInputs = {
+    email: useRef<HTMLInputElement>(null)
   };
   const { setIsLoggedIn } = useProfile();
 
@@ -47,8 +50,8 @@ function RouteComponent() {
       return;
     }
 
-    toast.success('Signed up successfully, please check your email to verify your account');
     setIsLoading(false);
+    toast.success('Signed up successfully, please check your email to verify your account');
     setAuthenticationType('login');
   };
 
@@ -87,6 +90,22 @@ function RouteComponent() {
     navigate({ to: '/', search: { page: 1 } });
   };
 
+  const handleForgotPassword = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    const { error } = await sendPasswordResetLink(forgotPasswordInputs.email.current?.value ?? '');
+
+    if (error) {
+      toast.error(`Error sending password reset link: ${ error.message }`);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(false);
+    toast.success('Password reset link sent successfully, please check your email');
+  }
+
   return (
     <>
     <div className='authentication-container'>
@@ -120,6 +139,9 @@ function RouteComponent() {
           <div className='authentication-actions-container'>
             <p>Don't have an account?</p>
             <button onClick={ () => setAuthenticationType('signup') }>Sign Up</button>
+          </div>
+          <div className='additional-actions-container'>
+            <button onClick={ () => setAuthenticationType('forgot-password') } className='forgot-password-button'>Forgot Password</button>
           </div>
         </section>
       }
@@ -161,6 +183,30 @@ function RouteComponent() {
           <div className='authentication-actions-container'>
             <p>Already have an account?</p>
             <button onClick={ () => setAuthenticationType('login') }>Login</button>
+          </div>
+        </section>
+      }
+      {
+        authenticationType === 'forgot-password' &&
+        <section className='authentication-wrapper'>
+          <h2>Reset Password</h2>
+          <form className='form forgot-password-form' onSubmit={ handleForgotPassword }>
+            <input
+              ref={ forgotPasswordInputs.email }
+              type='email'
+              className='form-input'
+              placeholder='Email address'
+              defaultValue={ forgotPasswordInputs.email.current?.value }
+              required
+            />
+            <button type='submit'>
+              {
+                isLoading ? <LoadSpinner width={ 16 } height={ 16 } /> : 'Reset Password'
+              }
+            </button>
+          </form>
+          <div className='additional-actions-container'>
+            <button onClick={ () => setAuthenticationType('login') } className='forgot-password-button'>Back to Login</button>
           </div>
         </section>
       }
