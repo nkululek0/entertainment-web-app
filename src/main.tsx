@@ -10,6 +10,7 @@ import { routeTree } from './routeTree.gen';
 
 import { ToastContainer } from 'react-toastify';
 import { ProfileProvider } from '@/stores/profile';
+import { BookmarkProvider } from '@/stores/bookmarks';
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -28,7 +29,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ProfileProvider>
-        <RouterProvider router={router} />
+        <BookmarkProvider>
+          <RouterProvider router={router} />
+        </BookmarkProvider>
       </ProfileProvider>
       <ToastContainer
         position="top-right"
