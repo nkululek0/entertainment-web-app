@@ -66,8 +66,8 @@ export const Route = createFileRoute('/')({
 
 function RouteComponent() {
   const { trendingMedia, recommended, page } = useLoaderData({ from: '/' });
-  const totalPages = 5;
   const navigate = useNavigate({ from: '/' });
+  const totalPages = 5;
 
   const navigateTo = (pageSymbol: PageNavigationSymbols) => {
     handlePageChange(navigate, pageSymbol, page, totalPages);
@@ -92,6 +92,7 @@ function RouteComponent() {
                       params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
                       children={
                         <Card
+                          id={ item.id }
                           type='primary'
                           media_type={ item.media_type }
                           title={ item.title }
@@ -121,6 +122,7 @@ function RouteComponent() {
                     params={{ type: item.title ? 'movie' : 'tv', id: item.id.toString() }}
                     children={
                       <Card
+                        id={ item.id }
                         type='secondary'
                         title={ item.title }
                         name={ item.name }

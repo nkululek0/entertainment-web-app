@@ -67,6 +67,7 @@ function RouteComponent() {
                 params={{ type: 'tv', id: item.id.toString() }}
                 children={
                   <Card
+                    id={ item.id }
                     type='secondary'
                     title={ item.title }
                     name={ item.name }
