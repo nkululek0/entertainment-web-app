@@ -31,6 +31,17 @@ export const ShowResponseSchema = z.object({
 
 export type Show = z.infer<typeof ShowSchema>;
 export type ShowResponse = z.infer<typeof ShowResponseSchema>;
+export type Bookmark = {
+  id: number
+  type: 'primary' | 'secondary'
+  media_type?: 'movie' | 'tv'
+  title?: string
+  name?: string
+  release_date?: string
+  first_air_date?: string
+  poster_path: string
+  vote_average: number
+};
 
 export const ShowDetailsSchema = z.object({
   backdrop_path: z.union([z.string(), z.null()]),
