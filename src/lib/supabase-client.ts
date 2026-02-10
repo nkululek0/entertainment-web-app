@@ -5,10 +5,11 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-import { type Profile, ProfileSchema } from '@/api/types';
+import { type Profile, type Bookmark, ProfileSchema } from '@/api/types';
 
 const databaseNames = {
-  user_profiles: 'user_profiles'
+  userProfiles: 'user_profiles',
+  userBookmarks: 'user_bookmarks'
 };
 
 export const signUp = async (email: string, password: string) => {
@@ -47,7 +48,7 @@ export const logout = async () => {
 
 export const setUserProfile = async (username: string) => {
   const { error } = await supabase
-  .from(databaseNames.user_profiles)
+  .from(databaseNames.userProfiles)
   .insert({ username: username })
   .single();
 
@@ -56,7 +57,7 @@ export const setUserProfile = async (username: string) => {
 
 export const getUserProfile = async (username: string) => {
   const { data, error } = await supabase
-  .from(databaseNames.user_profiles)
+  .from(databaseNames.userProfiles)
   .select('*')
   .eq('username', username)
   .single();
@@ -124,10 +125,55 @@ export const resetPassword = async (password: string) => {
   return { error };
 };
 
+export const getUserBookmarks = async (username: string) => {
+  const { data, error } = await supabase
+  .from(databaseNames.userBookmarks)
+  .select('bookmarks')
+  .eq('username', username);
+
+  return { data: data ? data[0] : null, error };
+};
+
+export const handleUpdateUserBookmarks = async (username: string, bookmarks: Bookmark[]) => {
+  const { data, error: userBookmarksError } = await getUserBookmarks(username);
+
+  if (userBookmarksError) return { error: userBookmarksError };
+
+  if (!data) {
+    const { error: bookmarksError } = await insertUserBookmarks(username, bookmarks);
+
+    if (bookmarksError) return { error: bookmarksError };
+  }
+  else {
+    const { error: bookmarksError } = await updateUserBookmarks(username, bookmarks);
+
+    if (bookmarksError) return { error: bookmarksError };
+  }
+
+  return { error: null };
+};
+
+const updateUserBookmarks = async (username: string, bookmarks: Bookmark[]) => {
+  const { error } = await supabase
+  .from(databaseNames.userBookmarks)
+  .update({ bookmarks: bookmarks })
+  .eq('username', username);
+
+  return { error };
+};
+
+const insertUserBookmarks = async (username: string, bookmarks: Bookmark[]) => {
+  const { error } = await supabase
+  .from(databaseNames.userBookmarks)
+  .insert({ username: username, bookmarks: bookmarks });
+
+  return { error };
+};
+
 const setUserProfileGeneralDetails = (username: string, key: string, value: string) => {
   return async () => {
     const { error } = await supabase
-    .from(databaseNames.user_profiles)
+    .from(databaseNames.userProfiles)
     .update({ [key]: value })
     .match({ username: username });
 
