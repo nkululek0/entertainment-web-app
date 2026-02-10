@@ -1,3 +1,16 @@
+import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'react-toastify';
+
+import { handleUpdateUserBookmarks } from '@/lib/supabase-client';
+
+import type { Bookmark } from '@/api/types';
+
+import { useBookmarks } from '@/stores/bookmarks';
+import { useProfile } from '@/stores/profile';
+
+import { LoadSpinner } from '../load-spinner';
+
 import style from './Card.module.css';
 
 const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
@@ -26,15 +39,14 @@ const icons = {
     </g>
   </svg>),
   bookmark: {
-    filled: (<div className={ style['bookmark-container'] }>
+    filled: (
       <svg viewBox='-4 -4 20 20' width='20' height='18' xmlns='http://www.w3.org/2000/svg'>
         <path
           d='M10.61 0c.14 0 .273.028.4.083a1.03 1.03 0 0 1 .657.953v11.928a1.03 1.03 0 0 1-.656.953c-.116.05-.25.074-.402.074-.291 0-.543-.099-.756-.296L5.833 9.77l-4.02 3.924c-.218.203-.47.305-.756.305a.995.995 0 0 1-.4-.083A1.03 1.03 0 0 1 0 12.964V1.036A1.03 1.03 0 0 1 .656.083.995.995 0 0 1 1.057 0h9.552Z'
           fill='#FFF'
         />
-      </svg>
-    </div>),
-    empty: (<div className={ style['bookmark-container'] }>
+      </svg>),
+    empty: (
       <svg viewBox='-4 -4 20 20' width='20' height='18' xmlns='http://www.w3.org/2000/svg'>
         <path
           d='M10.61 0c.14 0 .273.028.4.083a1.03 1.03 0 0 1 .657.953v11.928a1.03 1.03 0 0 1-.656.953c-.116.05-.25.074-.402.074-.291 0-.543-.099-.756-.296L5.833 9.77l-4.02 3.924c-.218.203-.47.305-.756.305a.995.995 0 0 1-.4-.083A1.03 1.03 0 0 1 0 12.964V1.036A1.03 1.03 0 0 1 .656.083.995.995 0 0 1 1.057 0h9.552Z'
@@ -42,8 +54,7 @@ const icons = {
           stroke='#FFF'
           strokeWidth='2px'
         />
-      </svg>
-    </div>)
+      </svg>)
   },
   play: (
     <svg viewBox='-10 -10 520 520' width='80' height='80' xmlns='http://www.w3.org/2000/svg'>
@@ -55,7 +66,27 @@ const icons = {
   )
 };
 
+const getBookmarksObjectKeys = (bookmarks: Bookmark[]) => {
+  const result: Record<number, number> = {};
+
+  for (const bookmark of bookmarks) {
+    result[bookmark.id] = bookmark.id;
+  }
+
+  return result;
+};
+
+const setParentStyleDisplay = (event: React.MouseEvent, display: string, type: 'primary' | 'secondary') => {
+  const overlay = type == 'primary' ?
+    event.currentTarget.parentElement?.nextElementSibling as HTMLDivElement
+    :
+    event.currentTarget?.nextElementSibling as HTMLDivElement;
+
+  if (overlay) overlay.style.display = display;
+};
+
 type CardProps = {
+  id: number
   type: 'primary' | 'secondary'
   media_type?: 'movie' | 'tv'
   title?: string
@@ -67,7 +98,66 @@ type CardProps = {
 };
 
 export function Card(props: CardProps) {
-  const { type, media_type, title, name, release_date, first_air_date, poster_path, vote_average } = props;
+  const { id, type, media_type, title, name, release_date, first_air_date, poster_path, vote_average } = props;
+  const [isLoading, setIsLoading] = useState(false);
+  const { bookmarks, updateBookmarks } = useBookmarks();
+  const bookmarksObjectKeys = getBookmarksObjectKeys(bookmarks);
+  const bookmarkIcon = bookmarksObjectKeys[id] ? icons.bookmark.filled : icons.bookmark.empty;
+  const { isLoggedIn, profile } = useProfile();
+  const navigate = useNavigate();
+
+  const handleBookmarkMouseEnter = (event: React.MouseEvent, type: 'primary' | 'secondary') => {
+    setParentStyleDisplay(event, 'none', type);
+  };
+
+  const handleBookmarkMouseLeave = (event: React.MouseEvent, type: 'primary' | 'secondary') => {
+    setParentStyleDisplay(event, '', type);
+  };
+
+  const handleBookmarkClick = async (event: React.MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setIsLoading(true);
+
+    if (!isLoggedIn) {
+      setIsLoading(false);
+      toast.info('You must be logged in to add bookmarks');
+      navigate({ to: '/authentication'});
+      return;
+    }
+
+    if (bookmarksObjectKeys[id]) {
+      const updatedBookmarks = bookmarks.filter((bookmark) => bookmark.id !== id);
+
+      const { error } = await handleUpdateUserBookmarks(profile.username, updatedBookmarks);
+
+      setIsLoading(false);
+
+      if (error) {
+        toast.error(`Error updating user bookmarks: ${ error.message }`);
+        return;
+      }
+
+      toast.info('Bookmark removed successfully');
+      updateBookmarks();
+    } else {
+      const newBookmark = { ...props };
+
+      const { error } = await handleUpdateUserBookmarks(profile.username, [...bookmarks, newBookmark]);
+
+      setIsLoading(false);
+
+      if (error) {
+        toast.error(`Error updating user bookmarks: ${ error.message }`);
+        return;
+      }
+
+      toast.info('Bookmark added successfully');
+      updateBookmarks();
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -90,7 +180,16 @@ export function Card(props: CardProps) {
               </p>
               <p>{ icons.star } { vote_average.toFixed(1) }</p>
             </section>
-            { icons.bookmark.empty }
+            <div
+              className={ style['bookmark-container'] }
+              onMouseEnter={ (event) => { handleBookmarkMouseEnter(event, 'primary'); } }
+              onMouseLeave={ (event) => { handleBookmarkMouseLeave(event, 'primary'); } }
+              onClick={ handleBookmarkClick }
+            >
+              {
+                isLoading ? <LoadSpinner width={ 24 } height={ 24 } /> : bookmarkIcon
+              }
+            </div>
           </div>
           <div className={ style['overlay-container'] }>
             <div className={ style['overlay'] }>
@@ -119,7 +218,16 @@ export function Card(props: CardProps) {
               backgroundPosition: 'center'
             }}
           >
-            { icons.bookmark.empty }
+            <div
+              className={ style['bookmark-container'] }
+              onMouseEnter={ (event) => { handleBookmarkMouseEnter(event, 'secondary'); } }
+              onMouseLeave={ (event) => { handleBookmarkMouseLeave(event, 'secondary'); } }
+              onClick={ handleBookmarkClick }
+            >
+              {
+                isLoading ? <LoadSpinner width={ 24 } height={ 24 } /> : bookmarkIcon
+              }
+            </div>
             <div className={ style['overlay-container'] }>
               <div className={ style['overlay'] }>
                 { icons.play }
