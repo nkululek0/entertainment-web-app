@@ -127,6 +127,11 @@
   display: block;
 }
 
+.secondary:hover,
+.primary:hover {
+  scale: 1.05;
+}
+
 .overlay {
   position: relative;
   width: 100%;
