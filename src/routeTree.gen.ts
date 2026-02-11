@@ -13,7 +13,7 @@ import { Route as TvSeriesRouteImport } from './routes/tv-series'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MoviesRouteImport } from './routes/movies'
-import { Route as BookmarkRouteImport } from './routes/bookmark'
+import { Route as BookmarksRouteImport } from './routes/bookmarks'
 import { Route as AuthenticationRouteImport } from './routes/authentication'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfileUsernameRouteImport } from './routes/profile/$username'
@@ -39,9 +39,9 @@ const MoviesRoute = MoviesRouteImport.update({
   path: '/movies',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookmarkRoute = BookmarkRouteImport.update({
-  id: '/bookmark',
-  path: '/bookmark',
+const BookmarksRoute = BookmarksRouteImport.update({
+  id: '/bookmarks',
+  path: '/bookmarks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticationRoute = AuthenticationRouteImport.update({
@@ -68,7 +68,7 @@ const ShowDetailsTypeIdRoute = ShowDetailsTypeIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/authentication': typeof AuthenticationRoute
-  '/bookmark': typeof BookmarkRoute
+  '/bookmarks': typeof BookmarksRoute
   '/movies': typeof MoviesRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -79,7 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/authentication': typeof AuthenticationRoute
-  '/bookmark': typeof BookmarkRoute
+  '/bookmarks': typeof BookmarksRoute
   '/movies': typeof MoviesRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -91,7 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/authentication': typeof AuthenticationRoute
-  '/bookmark': typeof BookmarkRoute
+  '/bookmarks': typeof BookmarksRoute
   '/movies': typeof MoviesRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -104,7 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/authentication'
-    | '/bookmark'
+    | '/bookmarks'
     | '/movies'
     | '/reset-password'
     | '/search'
@@ -115,7 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/authentication'
-    | '/bookmark'
+    | '/bookmarks'
     | '/movies'
     | '/reset-password'
     | '/search'
@@ -126,7 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/authentication'
-    | '/bookmark'
+    | '/bookmarks'
     | '/movies'
     | '/reset-password'
     | '/search'
@@ -138,7 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticationRoute: typeof AuthenticationRoute
-  BookmarkRoute: typeof BookmarkRoute
+  BookmarksRoute: typeof BookmarksRoute
   MoviesRoute: typeof MoviesRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
@@ -177,11 +177,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MoviesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bookmark': {
-      id: '/bookmark'
-      path: '/bookmark'
-      fullPath: '/bookmark'
-      preLoaderRoute: typeof BookmarkRouteImport
+    '/bookmarks': {
+      id: '/bookmarks'
+      path: '/bookmarks'
+      fullPath: '/bookmarks'
+      preLoaderRoute: typeof BookmarksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/authentication': {
@@ -218,7 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticationRoute: AuthenticationRoute,
-  BookmarkRoute: BookmarkRoute,
+  BookmarksRoute: BookmarksRoute,
   MoviesRoute: MoviesRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
